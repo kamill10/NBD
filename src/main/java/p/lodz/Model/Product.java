@@ -1,48 +1,51 @@
 package p.lodz.Model;
 
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
 
 @Getter
 @Setter
-@Entity
-@NoArgsConstructor
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @BsonProperty("_id")
     private Long id;
-
-    @Version
-    private Integer version;
-
-
-    @Column(name = "product_name")
-    @NotNull
+    @BsonProperty("product_name")
     private String productName;
-    @Column(name = "base_cost")
-    @NotNull
+    @BsonProperty("base_cost")
     private double baseCost;
-    @Column(name = "discount")
-    @NotNull
+    @BsonProperty("discount")
     private double discount;
-    @Column(name = "archived")
+    @BsonProperty("archived")
     private boolean archived = false;
-    @Column(name = "nuber_of_products")
-    @NotNull
-    @Min(value = 0, message = "Number of products cannot be less than 0.")
+    @BsonProperty("number_of_products")
     private int numberOfProducts;
-    @Column(name = "description")
-    @Size(max = 100, message = "Description cannot be longer than 100 characters.")
+    @BsonProperty("description")
     private String description;
 
-    public Product(String productName, double baseCost, int numberOfProducts, String description) {
+    @BsonCreator
+    public Product(@BsonProperty("_id") Long id,
+                   @BsonProperty("product_name") String productName,
+                   @BsonProperty("base_cost") double baseCost,
+                   @BsonProperty("discount") double discount,
+                   @BsonProperty("archived") boolean archived,
+                   @BsonProperty("number_of_products") int numberOfProducts,
+                   @BsonProperty("description") String description) {
+        this.id = id;
+        this.productName = productName;
+        this.baseCost = baseCost;
+        this.discount = discount;
+        this.archived = archived;
+        this.numberOfProducts = numberOfProducts;
+        this.description = description;
+    }
+
+    public Product(String productName,
+                   double baseCost,
+                   int numberOfProducts,
+                   String description) {
         this.productName = productName;
         this.baseCost = baseCost;
         this.numberOfProducts = numberOfProducts;

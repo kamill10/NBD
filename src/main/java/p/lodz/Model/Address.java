@@ -13,10 +13,6 @@ public class Address {
     private String street;
     private String number;
 
-    public String getAddressInfo(){
-        return city + " " + street + " " + number;
-    }
-
     public Address(String city, String street, String number) {
         this.city = city;
         this.street = street;

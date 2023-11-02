@@ -13,8 +13,8 @@ public class ClientTypeRepositoryImpl implements ClientTypeRepository {
     @Override
     public ClientType saveClientType(ClientType clientType) {
 //        em.getTransaction().begin();
-        if(clientType.getId() == null) em.persist(clientType);
-        else clientType = em.merge(clientType);
+//        if(clientType.getId() == null) em.persist(clientType);
+//        else clientType = em.merge(clientType);
 //        em.getTransaction().commit();
         return clientType;
     }

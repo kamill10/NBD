@@ -37,15 +37,15 @@ public class PurchaseManager {
         Iterator<Product> iterator = products.iterator();
         while (iterator.hasNext()) {
             Product product = iterator.next();
-            Product lockedProduct = em.find(Product.class,product.getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-            if(lockedProduct.isArchived()) {
+//            Product lockedProduct = em.find(Product.class,product.getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+//            if(lockedProduct.isArchived()) {
                 iterator.remove();
             }
-            productRepository.decrementNumberOfProducts(lockedProduct.getId());
-            if (lockedProduct.getNumberOfProducts() == 0) {
-                productRepository.archiveProduct(lockedProduct.getId());
-            }
-        }
+//            productRepository.decrementNumberOfProducts(lockedProduct.getId());
+//            if (lockedProduct.getNumberOfProducts() == 0) {
+//                productRepository.archiveProduct(lockedProduct.getId());
+//            }
+//        }
         Purchase purchase = new Purchase(customer, products);
         purchase = purchaseRepository.savePurchase(purchase);
         em.getTransaction().commit();
@@ -54,20 +54,21 @@ public class PurchaseManager {
 
     public Purchase registerPurchase(Client customer, Product product){
         em.getTransaction().begin();
-        Product lockedProduct = em.find(Product.class,product.getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-        if(lockedProduct.isArchived()) {
-            em.getTransaction().rollback();
-            throw new InvalidPurchaseException("The order cannot be processed. Product is Archived.");
-        } else {
-            productRepository.decrementNumberOfProducts(lockedProduct.getId());
-            if (lockedProduct.getNumberOfProducts() == 0) {
-                productRepository.archiveProduct(lockedProduct.getId());
-            }
-        }
-        Purchase purchase = new Purchase(customer,lockedProduct);
-        purchase =  purchaseRepository.savePurchase(purchase);
-        em.getTransaction().commit();
-        return purchase;
+//        Product lockedProduct = em.find(Product.class,product.getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+//        if(lockedProduct.isArchived()) {
+//            em.getTransaction().rollback();
+//            throw new InvalidPurchaseException("The order cannot be processed. Product is Archived.");
+//        } else {
+//            productRepository.decrementNumberOfProducts(lockedProduct.getId());
+//            if (lockedProduct.getNumberOfProducts() == 0) {
+//                productRepository.archiveProduct(lockedProduct.getId());
+//            }
+//        }
+//        Purchase purchase = new Purchase(customer,lockedProduct);
+//        purchase =  purchaseRepository.savePurchase(purchase);
+//        em.getTransaction().commit();
+//        return purchase;
+        return null;
     }
 
     public List<Purchase> findAllPurchases() {

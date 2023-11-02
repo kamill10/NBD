@@ -28,7 +28,7 @@ public class ClientRepositoryImpl implements ClientRepository {
         em.getTransaction().begin();
         Client client = em.find(Client.class, id);
         if (client != null) {
-            client.setArchived(true);
+//            client.setArchived(true);
             em.merge(client);
             em.getTransaction().commit();
         } else {

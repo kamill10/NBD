@@ -1,26 +1,29 @@
 package p.lodz.Model.Type;
 
-import jakarta.persistence.*;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "client_type")
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
+
+
+@Getter
+@Setter
+@NoArgsConstructor
 public abstract class ClientType {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "client_discount")
+    @BsonProperty("clientdiscount")
     private double clientDiscount;
 
-    @Column(name = "shorter_delivery_time")
+    @BsonProperty("shorterdeliverytime")
     private int shorterDeliveryTime;
 
-    public abstract double getClientDiscount();
-    public abstract int getShorterDeliveryTime();
-
-    public Long getId() {
-        return id;
+    @BsonCreator
+    public ClientType(@BsonProperty("clientdiscount") double clientDiscount, @BsonProperty("shorterdeliverytime") int shorterDeliveryTime) {
+        this.clientDiscount = clientDiscount;
+        this.shorterDeliveryTime = shorterDeliveryTime;
     }
+
 }

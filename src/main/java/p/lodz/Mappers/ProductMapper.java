@@ -17,7 +17,7 @@ public class ProductMapper {
     }
 
     public static Document toMongoProduct(Product product) {
-        return new Document("_id", product.getId())
+        return new Document("_id", product.getEntityId())
                 .append("product_name", product.getProductName())
                 .append("base_cost", product.getBaseCost())
                 .append("discount", product.getDiscount())

@@ -1,5 +1,6 @@
 package p.lodz;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import p.lodz.Model.Address;
 import p.lodz.Model.Client;

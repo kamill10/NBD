@@ -8,10 +8,10 @@ import org.bson.types.ObjectId;
 
 @Getter
 @Setter
-public class Product {
+public class Product extends AbstractEntity {
 
-    @BsonProperty("_id")
-    private ObjectId id;
+//    @BsonProperty("_id")
+//    private ObjectId id;
     @BsonProperty("product_name")
     private String productName;
     @BsonProperty("base_cost")
@@ -33,7 +33,7 @@ public class Product {
                    @BsonProperty("archived") boolean archived,
                    @BsonProperty("number_of_products") int numberOfProducts,
                    @BsonProperty("description") String description) {
-        this.id = id;
+        super(id);
         this.productName = productName;
         this.baseCost = baseCost;
         this.discount = discount;
@@ -46,7 +46,7 @@ public class Product {
                    double baseCost,
                    int numberOfProducts,
                    String description) {
-        this.id = new ObjectId();
+        super(new ObjectId());
         this.productName = productName;
         this.baseCost = baseCost;
         this.numberOfProducts = numberOfProducts;

@@ -1,23 +1,10 @@
 package p.lodz.Model.Type;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
+@BsonDiscriminator(key = "_clazz", value = "standard")
 public class Standard extends ClientType{
-
-
-    private double clientDiscount = 0;
-
-    private int shorterDeliveryTime = 0;
-
-//    @Override
-//    public double getClientDiscount() {
-//        return clientDiscount;
-//    }
-//
-//    @Override
-//    public int getShorterDeliveryTime() {
-//        return shorterDeliveryTime;
-//    }
+    public Standard() {
+        super(0, 0);
+    }
 }

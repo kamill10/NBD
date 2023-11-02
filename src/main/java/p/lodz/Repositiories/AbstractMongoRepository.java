@@ -12,6 +12,10 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import p.lodz.Model.Type.ClientType;
+import p.lodz.Model.Type.Premium;
+import p.lodz.Model.Type.PremiumDeluxe;
+import p.lodz.Model.Type.Standard;
 
 import java.util.List;
 
@@ -38,7 +42,12 @@ public class AbstractMongoRepository implements AutoCloseable{
                 .applyConnectionString(connectionString)
                 .uuidRepresentation(UuidRepresentation.STANDARD)
                 .codecRegistry(CodecRegistries.fromRegistries(
-//                        CodecRegistries.fromProviders(new UniqueIdCodecProvider()),
+                        CodecRegistries.fromProviders(PojoCodecProvider.builder().register(
+                                ClientType.class,
+                                Premium.class,
+                                PremiumDeluxe.class,
+                                Standard.class
+                        ).build()),
                         MongoClientSettings.getDefaultCodecRegistry(),
                         pojoCodecRegistry
                 ))

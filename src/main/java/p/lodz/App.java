@@ -2,15 +2,15 @@ package p.lodz;
 
 import com.mongodb.client.MongoDatabase;
 import p.lodz.Model.*;
+import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
+import p.lodz.Model.Type.PremiumDeluxe;
 import p.lodz.Model.Type.Standard;
-import p.lodz.Repositiories.AbstractMongoRepository;
-import p.lodz.Repositiories.ClientRepository;
+import p.lodz.Repositiories.*;
 import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
+import p.lodz.Repositiories.MongoImplementations.ClientTypeRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.PurchaseRepositoryMongoDB;
-import p.lodz.Repositiories.ProductRepository;
-import p.lodz.Repositiories.PurchaseRepository;
 
 import java.util.List;
 
@@ -23,10 +23,17 @@ public class App {
             Product product = new Product("bbb", 10, 1, "aabb");
             productRepository.saveProduct(product);
             Product product1 = new Product("test", 120, 3, "casf");
+            ClientType type1 = new Standard();
+            ClientType type2 = new Premium();
+            ClientType type3 = new PremiumDeluxe();
+            ClientTypeRepository clientTypeRepository = new ClientTypeRepositoryMongoDB(mongoDatabase.getCollection("types", ClientType.class));
+            clientTypeRepository.saveClientType(type1);
+            clientTypeRepository.saveClientType(type2);
+            clientTypeRepository.saveClientType(type3);
             Client client = new Client(
-                    "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), new Standard());
+                    "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), clientTypeRepository.getClientType("standard"));
             Client client2 = new Client(
-                    "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), new Premium());
+                    "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), clientTypeRepository.getClientType("premium"));
             ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients", Client.class));
             clientRepository.saveClient(client);
             clientRepository.saveClient(client2);

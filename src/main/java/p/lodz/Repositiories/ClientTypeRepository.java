@@ -4,4 +4,5 @@ import p.lodz.Model.Type.ClientType;
 
 public interface ClientTypeRepository {
     ClientType saveClientType(ClientType clientType);
+    ClientType getClientType(String type);
 }

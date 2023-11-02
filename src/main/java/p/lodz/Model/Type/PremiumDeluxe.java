@@ -1,24 +1,10 @@
 package p.lodz.Model.Type;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
+@BsonDiscriminator(key = "_clazz", value = "premium_deluxe")
 public class PremiumDeluxe extends ClientType{
-
-
-    private double clientDiscount = 0.2;
-
-
-    private int shorterDeliveryTime = 2;
-
-//    @Override
-//    public double getClientDiscount() {
-//        return clientDiscount;
-//    }
-//
-//    @Override
-//    public int getShorterDeliveryTime() {
-//        return shorterDeliveryTime;
-//    }
+    public PremiumDeluxe() {
+        super(0.2, 2);
+    }
 }

@@ -11,4 +11,5 @@ public interface ProductRepository {
     Product decrementNumberOfProducts(ObjectId id);
     Product findProductById(ObjectId id);
     List<Product> findAllProducts();
+    boolean deleteProduct(ObjectId id);
 }

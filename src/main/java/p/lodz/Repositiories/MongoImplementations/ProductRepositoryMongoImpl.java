@@ -61,4 +61,10 @@ public class ProductRepositoryMongoImpl implements ProductRepository {
         });
         return products;
     }
+
+    @Override
+    public boolean deleteProduct(ObjectId id) {
+        Document deletedProduct = mongoCollection.findOneAndDelete(Filters.eq("_id", id));
+        return deletedProduct != null;
+    }
 }

@@ -29,7 +29,7 @@ public class ClientManager {
         return clientRepository.saveClient(client);
     }
 
-    public List<Client> getAllClients(boolean archived) {
-        return clientRepository.findAllClients(archived);
+    public List<Client> getAllClients() {
+        return clientRepository.findAllClients();
     }
 }

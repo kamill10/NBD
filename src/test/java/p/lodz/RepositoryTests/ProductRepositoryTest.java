@@ -1,65 +1,69 @@
 package p.lodz.RepositoryTests;
 
+import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import p.lodz.Model.Client;
 import p.lodz.Model.Product;
+import p.lodz.Repositiories.AbstractMongoRepository;
+import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
+import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 import p.lodz.Repositiories.ProductRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductRepositoryTest {
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
-    private static ProductRepository productRepository;
+    static AbstractMongoRepository repository = new AbstractMongoRepository();
+    static MongoDatabase productDatabase = repository.getDatabase();
+    static ProductRepositoryMongoDB productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products_test", Product.class));
 
-    @BeforeAll
-    static void initTest() {
-        emf = Persistence.createEntityManagerFactory("test");
-        em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        productRepository = new ProductRepositoryImpl(em);
-    }
+
 
     @Test
     void saveProductTest() {
-        Product product = new Product("aaa", 1, 1, "aaa");
+        Product product = new Product("buty", 1, 1, "aaa");
         assertEquals(product, productRepository.saveProduct(product));
     }
 
     @Test
     void archiveProductTest() {
-        Product savedProduct = productRepository.saveProduct(new Product("aaa", 1, 1, "aaa"));
-//        Product product1 = productRepository.archiveProduct(savedProduct.getId());
-//        assertTrue(product1.isArchived());
+        Product savedProduct = productRepository.saveProduct(new Product("skora", 1, 1, "aaa"));
+       Product product1 = productRepository.archiveProduct(savedProduct.getEntityId());
+        assertTrue(product1.isArchived());
     }
 
     @Test
     void decrementNumberOfProductTest() {
-        Product savedProduct = productRepository.saveProduct(new Product("aaa", 1, 1, "aaa"));
-        em.getTransaction().begin();
-//        Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getId());
-        em.getTransaction().commit();
-//        assertEquals(0, productAfterDecrement.getNumberOfProducts());
-//        assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(savedProduct.getId());});
+        Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
+       Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId());
+        assertEquals(0, productAfterDecrement.getNumberOfProducts());
+       // assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(savedProduct.getEntityId());});
     }
 
     @Test
     void findProductByIdTest() {
-        Product savedProduct = productRepository.saveProduct(new Product("aaa", 1, 1, "aaa"));
-//        assertEquals(savedProduct, productRepository.findProductById(savedProduct.getId()));
+        Product savedProduct = productRepository.saveProduct(new Product("dres", 1, 1, "aaa"));
+        assertEquals(savedProduct.getEntityId(), productRepository.findProductById(savedProduct.getEntityId()).getEntityId());
     }
 
     @Test
     void findAllProductsTest() {
-        assertEquals(3, productRepository.findAllProducts().size());
+        Product product = new Product("suknia", 1, 1, "aaa");
+        Product product2 = new Product("talon", 1, 1, "aaa");
+        productRepository.saveProduct(product);
+        productRepository.saveProduct(product2);
+    }
+    @AfterAll
+    static void cleanDataBase(){
+        assertEquals(productRepository.findAllProducts().size(),6);
+        productDatabase.getCollection("products_test").drop(); // Remove the collection
+
     }
 
-    @AfterAll
-    static void endTest() {
-//        em.getTransaction().commit();
-        if(emf != null) emf.close();
-    }
+
+
+
 }

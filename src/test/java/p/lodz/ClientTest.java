@@ -1,10 +1,13 @@
 package p.lodz;
 
+import com.mongodb.client.MongoDatabase;
 import org.junit.jupiter.api.Test;
 import p.lodz.Model.Address;
 import p.lodz.Model.Client;
 import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
+import p.lodz.Repositiories.AbstractMongoRepository;
+import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,8 +18,7 @@ public class ClientTest {
     private final String testLastName2 = "Byl";
     private ClientType clientType = new Premium();
     private Client testClient1 =  new Client(testFirstName1, testLastName1, new Address("aaa", "bbb", "ccc"),clientType);
-
-
+    private Client getTestClient2 = new Client(testFirstName2,testLastName2,new Address("nie","wiem","3"),clientType);
 
     @Test
     public void clientConstructorTest() {

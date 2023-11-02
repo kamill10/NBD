@@ -9,5 +9,5 @@ public interface ClientRepository {
     Client saveClient(Client client);
     boolean deleteClient(ObjectId id);
     Client findClientById(ObjectId id);
-    List<Client> findAllClients(boolean archived);
+    List<Client> findAllClients();
 }

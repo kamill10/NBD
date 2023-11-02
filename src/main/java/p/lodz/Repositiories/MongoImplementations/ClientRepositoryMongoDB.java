@@ -37,7 +37,7 @@ public class ClientRepositoryMongoDB implements ClientRepository {
     }
 
     @Override
-    public List<Client> findAllClients(boolean archived) {
+    public List<Client> findAllClients() {
         return clientsCollection.find().into(new ArrayList<>());
     }
 }

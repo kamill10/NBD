@@ -1,5 +1,6 @@
 package p.lodz.RepositoryTests;
 
+import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -10,67 +11,48 @@ import p.lodz.Model.Address;
 import p.lodz.Model.Client;
 import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
+import p.lodz.Model.Type.PremiumDeluxe;
+import p.lodz.Model.Type.Standard;
+import p.lodz.Repositiories.AbstractMongoRepository;
 import p.lodz.Repositiories.ClientRepository;
 import p.lodz.Repositiories.ClientTypeRepository;
-import p.lodz.Repositiories.Implementations.ClientRepositoryImpl;
-import p.lodz.Repositiories.Implementations.ClientTypeRepositoryImpl;
+import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientRepositoryTest {
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
-    private static ClientRepository clientRepository;
-    private static ClientTypeRepository clientTypeRepository;
 
-    @BeforeAll
-    static void initTest() {
-        emf = Persistence.createEntityManagerFactory("test");
-        em = emf.createEntityManager();
-        clientRepository = new ClientRepositoryImpl(em);
-        clientTypeRepository = new ClientTypeRepositoryImpl(em);
-//        em.getTransaction().begin();
-    }
+    Client testClient1 = new Client(
+            "Robert", "Lewandowski", new Address("Lodz1", "przykladow2a", "44A"), new Standard());
+    Client testClient2 = new Client(
+            "Jacek", "Bąk", new Address("Lodz1", "przykladow2a", "44A"), new Premium());
+    static AbstractMongoRepository repository = new AbstractMongoRepository();
+    static MongoDatabase clientDatabase = repository.getDatabase();
+    static ClientRepositoryMongoDB clientRepository = new ClientRepositoryMongoDB(clientDatabase.getCollection("clients_test",Client.class));
 
     @Test
     void saveClientTest() {
-        ClientType clientType = new Premium();
-        Address address = new Address("aaa", "bbb", "ccc");
-        Client client = new Client("Adam1", "Fajny", address, clientTypeRepository.saveClientType(clientType));
-        assertEquals(client, clientRepository.saveClient(client));
+        assertEquals(clientRepository.saveClient(testClient1),testClient1);
     }
 
     @Test
-    void archiveClientTest() {
-        ClientType clientType = new Premium();
-        Address address = new Address("aaa", "bbb", "ccc");
-        Client client = new Client("Adam2", "Fajny", address, clientTypeRepository.saveClientType(clientType));
-        Client savedClient = clientRepository.saveClient(client);
-//        Client client1 = clientRepository.archiveClient(savedClient.getId());
-//        assertTrue(client1.isArchived());
+    void deleteClientTest() {
+        clientRepository.saveClient(testClient2);
+       assertEquals(clientRepository.deleteClient(testClient2.getEntityId()),true);
     }
 
     @Test
     void findClientByIdTest() {
-        ClientType clientType = new Premium();
-        Address address = new Address("aaa", "bbb", "ccc");
-        Client client = new Client("Adam3", "Fajny", address, clientTypeRepository.saveClientType(clientType));
-        Client savedClient = clientRepository.saveClient(client);
-//        assertEquals(client, clientRepository.findClientById(savedClient.getId()));
-    }
+        Client client = clientRepository.saveClient(testClient2);
+        assertEquals(clientRepository.findClientById(client.getEntityId()),client);
 
-    @Test
-    void findAllClientsTest() {
-        ClientType clientType = new Premium();
-        Address address = new Address("aaa", "bbb", "ccc");
-        Client client = new Client("Adam4", "Fajny", address, clientTypeRepository.saveClientType(clientType));
-        clientRepository.saveClient(client);
-        assertEquals(3, clientRepository.findAllClients(false).size());
     }
-
     @AfterAll
-    static void endTest() {
-//        em.getTransaction().commit();
-        if(emf != null) emf.close();
+    static void cleanDataBase(){
+        assertEquals(clientRepository.findAllClients().size(),1);
+        clientDatabase.getCollection("clients_test").drop(); // Remove the collection
+
     }
+
+
 }

@@ -1,5 +1,6 @@
 package p.lodz.RepositoryTests;
 
+import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -12,78 +13,45 @@ import p.lodz.Model.Product;
 import p.lodz.Model.Purchase;
 import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
-import p.lodz.Repositiories.ClientRepository;
-import p.lodz.Repositiories.ClientTypeRepository;
-import p.lodz.Repositiories.Implementations.ClientRepositoryImpl;
-import p.lodz.Repositiories.Implementations.ClientTypeRepositoryImpl;
-import p.lodz.Repositiories.Implementations.PurchaseRepositoryImpl;
-import p.lodz.Repositiories.ProductRepository;
-import p.lodz.Repositiories.PurchaseRepository;
+import p.lodz.Repositiories.*;
+import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
+import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
+import p.lodz.Repositiories.MongoImplementations.PurchaseRepositoryMongoDB;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PurchaseRepositoryTest {
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
-    private static PurchaseRepository purchaseRepository;
-    private static ClientRepository clientRepository;
-    private static ProductRepository productRepository;
-    private static ClientTypeRepository clientTypeRepository;
 
-    @BeforeAll
-    static void initTest() {
-        emf = Persistence.createEntityManagerFactory("test");
-        em = emf.createEntityManager();
-        purchaseRepository = new PurchaseRepositoryImpl(em);
-        clientRepository = new ClientRepositoryImpl(em);
-        productRepository = new ProductRepositoryImpl(em);
-        clientTypeRepository = new ClientTypeRepositoryImpl(em);
-    }
+    static AbstractMongoRepository repository = new AbstractMongoRepository();
+    static MongoDatabase purchaseDatabase = repository.getDatabase();
+    private static Client testClient1 =  new Client("jan", "kowalski", new Address("aaa", "bbb", "ccc"),new Premium());
+    private static  Client testClient2 =  new Client("zdichu", "mulat", new Address("pcim", "dolny", "ccc"),new Premium());
+
+    static Product product = new Product("aaa", 1, 1, "aaa");
+    static Product product2 = new Product("buty", 1, 1, "luksusowe buty arktyczne");
+    static PurchaseRepositoryMongoDB purchaseRepository  = new PurchaseRepositoryMongoDB(purchaseDatabase.getCollection("purchases_test",Purchase.class));
+    Purchase purchase1 = new Purchase(testClient1,product);
+    Purchase purchase2 = new Purchase(testClient2,product2);
 
     @Test
     void savePurchaseTest() {
-        ClientType clientType = new Premium();
-        Address address = new Address("aaa", "bbb", "ccc");
-        Client client = new Client("Adam", "Fajny", address, clientTypeRepository.saveClientType(clientType));
-        Client savedClient = clientRepository.saveClient(client);
-        Product product = new Product("aaa", 1, 1, "aaa");
-        Product savedProduct = productRepository.saveProduct(product);
-        Purchase purchase = new Purchase(savedClient, new ArrayList<Product>() {
-            {
-                add(savedProduct);
-            }
-        });
-        Purchase savedPurchase = purchaseRepository.savePurchase(purchase);
-        assertEquals(purchase, savedPurchase);
+        assertEquals(purchaseRepository.savePurchase(purchase1).getEntityId(),purchase1.getEntityId());
     }
-
-    @Test
-    void findAllClientPurchasesTest() {
-        ClientType clientType = new Premium();
-        Address address = new Address("aaa", "bbb", "ccc");
-        Client client = new Client("Adam", "Fajny", address, clientTypeRepository.saveClientType(clientType));
-        Client savedClient = clientRepository.saveClient(client);
-        Product product = new Product("aaa", 1, 1, "aaa");
-        Product savedProduct = productRepository.saveProduct(product);
-        Purchase purchase = new Purchase(savedClient, new ArrayList<Product>() {
-            {
-                add(savedProduct);
-            }
-        });
-        em.getTransaction().begin();
-        Purchase savedPurchase = purchaseRepository.savePurchase(purchase);
-        em.getTransaction().commit();
-        assertEquals( new ArrayList<Purchase>() {
-            {
-                add(savedPurchase);
-            }
-        }, purchaseRepository.findAllClientPurchases(client));
-    }
-
+   @Test
+    void findPurchaseById(){
+        purchaseRepository.savePurchase(purchase2);
+       assertEquals(purchase2.getEntityId(),purchaseRepository.findPurchaseById(purchase2.getEntityId()).getEntityId());
+   }
+   @Test
+   void findAllClientPurchase(){
+       assertEquals(purchaseRepository.findAllClientPurchases(testClient1).size(),1);
+   }
     @AfterAll
-    static void endTest() {
-        if (emf != null) emf.close();
+    static void cleanDataBase(){
+        assertEquals(purchaseRepository.findAllPurchases().size(),2);
+        purchaseDatabase.getCollection("purchases_test").drop(); // Remove the collection
+
     }
 }

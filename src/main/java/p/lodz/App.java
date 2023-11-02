@@ -24,7 +24,7 @@ public class App {
             productRepository.saveProduct(product);
             Product product1 = new Product("test", 120, 3, "casf");
             Client client = new Client(
-                    "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), new Standard());
+                    "Konrad1", "kozaaa1", new Address("Lodz1", "przykladow2a", "44A"), new Standard());
             Client client2 = new Client(
                     "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), new Premium());
             ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients", Client.class));

@@ -11,6 +11,7 @@ import p.lodz.Repositiories.PurchaseRepository;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class PurchaseManager {
     private final PurchaseRepository purchaseRepository;
@@ -23,22 +24,11 @@ public class PurchaseManager {
         return purchaseRepository.findPurchaseById(id);
     }
 
-    public Purchase registerPurchase(Client customer, List<Product> products){
+    public Purchase registerPurchase(Client customer, Map<Product, Integer> products) {
         if (products.isEmpty()) {
             throw new InvalidPurchaseException("The order cannot be processed. Products list is empty.");
         }
-        Iterator<Product> iterator = products.iterator();
-        while (iterator.hasNext()) {
-            Product product = iterator.next();
-                iterator.remove();
-        }
         Purchase purchase = new Purchase(customer, products);
-        purchase = purchaseRepository.savePurchase(purchase);
-        return purchase;
-    }
-
-    public Purchase registerPurchase(Client customer, Product product){
-        Purchase purchase = new Purchase(customer, List.of(product));
         purchase = purchaseRepository.savePurchase(purchase);
         return purchase;
     }

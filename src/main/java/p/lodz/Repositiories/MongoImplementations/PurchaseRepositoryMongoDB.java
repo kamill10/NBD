@@ -1,30 +1,32 @@
 package p.lodz.Repositiories.MongoImplementations;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import org.bson.types.ObjectId;
 import p.lodz.Model.Client;
 import p.lodz.Model.Purchase;
 import p.lodz.Repositiories.PurchaseRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PurchaseRespositoryMongoDB implements PurchaseRepository {
+public class PurchaseRepositoryMongoDB implements PurchaseRepository {
 
+    private final MongoCollection<Purchase> purchasesCollection;
 
-    private MongoCollection<Purchase> purchasesCollection;
-
-    public PurchaseRespositoryMongoDB(MongoCollection<Purchase> purchasesCollection) {
+    public PurchaseRepositoryMongoDB(MongoCollection<Purchase> purchasesCollection) {
         this.purchasesCollection = purchasesCollection;
     }
 
 
     @Override
-    public Purchase findPurchaseById(Long id) {
-        return null;
+    public Purchase findPurchaseById(ObjectId id) {
+        return purchasesCollection.find(Filters.eq("_id", id)).first();
     }
 
     @Override
     public List<Purchase> findAllPurchases() {
-        return null;
+        return purchasesCollection.find().into(new ArrayList<>());
     }
 
     @Override
@@ -35,6 +37,7 @@ public class PurchaseRespositoryMongoDB implements PurchaseRepository {
 
     @Override
     public List<Purchase> findAllClientPurchases(Client client) {
-        return null;
+        return purchasesCollection.find(Filters.eq("client", client)).into(new ArrayList<>());
     }
+
 }

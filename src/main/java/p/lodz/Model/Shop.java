@@ -13,18 +13,14 @@ import p.lodz.Managers.PurchaseManager;
 
 @Getter
 public class Shop {
-    private final ConnectionString connectionString = new ConnectionString("mongodb://admin:adminpassword@localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single");
-    private final MongoClient mongoClient = MongoClients.create(connectionString);
-    private final MongoDatabase mongoDatabase = mongoClient.getDatabase("nbddb");
-
     private final ClientManager clientManager;
     private final ProductManager productManager;
     private final PurchaseManager purchaseManager;
 
-    public Shop(EntityManager em, Validator validator) {
-        clientManager = new ClientManager(em, validator);
-        productManager = new ProductManager(em, validator);
-        purchaseManager = new PurchaseManager(em);
+    public Shop(MongoDatabase database) {
+        clientManager = new ClientManager(database.getCollection("client", Client.class));
+        productManager = new ProductManager(database.getCollection("product", Product.class));
+        purchaseManager = new PurchaseManager(database.getCollection("purchase", Purchase.class));
     }
 
 }

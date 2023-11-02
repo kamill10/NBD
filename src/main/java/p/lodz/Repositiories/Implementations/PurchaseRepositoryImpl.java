@@ -29,8 +29,8 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
 
     @Override
     public Purchase savePurchase(Purchase purchase) {
-        if(purchase.getId() == null) em.persist(purchase);
-        else purchase = em.merge(purchase);
+//        if(purchase.getId() == null) em.persist(purchase);
+//        else purchase = em.merge(purchase);
         return purchase;
     }
 

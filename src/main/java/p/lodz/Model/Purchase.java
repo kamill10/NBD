@@ -5,18 +5,22 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Purchase extends AbstractEntity{
 
     @BsonProperty("purchasedate")
@@ -32,21 +36,11 @@ public class Purchase extends AbstractEntity{
     private Client client;
 
     @BsonProperty("products")
-    private List<Product> products;
+    private Map<Product, Integer> products;
 
-    public Purchase(Client client, List<Product> products) {
+    public Purchase(Client client, Map<Product, Integer> products) {
         this.client = client;
         this.products = products;
-        purchaseDate = LocalDate.now();
-        setDeliveryTime();
-        setFinalCost();
-        client.addMoneySpent(finalCost);
-    }
-
-    public Purchase(Client client, Product product) {
-        this.client = client;
-        this.products = new ArrayList<>();
-        this.products.add(product);
         purchaseDate = LocalDate.now();
         setDeliveryTime();
         setFinalCost();
@@ -58,7 +52,7 @@ public class Purchase extends AbstractEntity{
                     @BsonProperty("deliverydate") LocalDate deliveryDate,
                     @BsonProperty("finalcost") double finalCost,
                     @BsonProperty("client") Client client,
-                    @BsonProperty("products") List<Product> products){
+                    @BsonProperty("products") Map<Product, Integer> products){
         this.purchaseDate = purchaseDate;
         this.deliveryDate = deliveryDate;
         this.finalCost = finalCost;
@@ -72,22 +66,11 @@ public class Purchase extends AbstractEntity{
     }
 
     private void setFinalCost(){
-        for(Product product : products) {
-            finalCost += product.getBaseCost() -
-                    product.getBaseCost() * product.getDiscount() -
-                    client.getClientDiscount() * product.getBaseCost();
-        }
-    }
+//        for(Product product : products) {
+//            finalCost += product.getBaseCost() -
+//                    product.getBaseCost() * product.getDiscount() -
+//                    client.getClientDiscount() * product.getBaseCost();
+//        }
 
-    @Override
-    public String toString() {
-        return toStringHelper(this)
-                .add("purchaseId", getEntityId())
-                .add("purchaseDate", purchaseDate)
-                .add("deliveryDate", deliveryDate)
-                .add("finalCost", finalCost)
-                .add("client", client)
-                .add("product", products)
-                .toString();
     }
 }

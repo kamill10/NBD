@@ -12,7 +12,9 @@ import p.lodz.Repositiories.MongoImplementations.ClientTypeRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.PurchaseRepositoryMongoDB;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
@@ -37,7 +39,10 @@ public class App {
             ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients", Client.class));
             clientRepository.saveClient(client);
             clientRepository.saveClient(client2);
-            Purchase purchase1 = new Purchase(client, List.of(product, product1));
+            Map<Product, Integer> purchases = new HashMap<>();
+            purchases.put(product, 1);
+            purchases.put(product1, 3);
+            Purchase purchase1 = new Purchase(client, purchases);
             purchaseRepository.savePurchase(purchase1);
             repository.getDatabase().getCollection("clients").find().forEach(System.out::println);
             repository.getDatabase().getCollection("products").find().forEach(System.out::println);

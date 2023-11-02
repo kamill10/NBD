@@ -2,11 +2,10 @@ package p.lodz.Managers;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.validation.Validator;
 import p.lodz.Exceptions.InvalidPurchaseException;
 import p.lodz.Model.*;
-import p.lodz.Repositiories.Implementations.ProductRepositoryImpl;
 import p.lodz.Repositiories.Implementations.PurchaseRepositoryImpl;
+import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoImpl;
 import p.lodz.Repositiories.ProductRepository;
 import p.lodz.Repositiories.PurchaseRepository;
 
@@ -20,7 +19,8 @@ public class PurchaseManager {
 
     public PurchaseManager(EntityManager em) {
         this.purchaseRepository = new PurchaseRepositoryImpl(em);
-        this.productRepository = new ProductRepositoryImpl(em);
+//        this.productRepository = new ProductRepositoryImpl(em);
+        this.productRepository = new ProductRepositoryMongoImpl();
         this.em = em;
     }
 

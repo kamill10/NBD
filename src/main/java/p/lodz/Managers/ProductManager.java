@@ -4,10 +4,10 @@ package p.lodz.Managers;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import org.bson.types.ObjectId;
 import p.lodz.Exceptions.InvalidValueException;
-import p.lodz.Model.Client;
 import p.lodz.Model.Product;
-import p.lodz.Repositiories.Implementations.ProductRepositoryImpl;
+import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoImpl;
 import p.lodz.Repositiories.ProductRepository;
 
 import java.util.List;
@@ -18,11 +18,12 @@ public class ProductManager {
     private final Validator validator;
 
     public ProductManager(EntityManager em, Validator validator) {
-        this.productRepository = new ProductRepositoryImpl(em);
+//        this.productRepository = new ProductRepositoryImpl(em);
+        this.productRepository = new ProductRepositoryMongoImpl();
         this.validator = validator;
     }
 
-    public Product getProduct(Long id){
+    public Product getProduct(ObjectId id){
         return productRepository.findProductById(id);
     }
 

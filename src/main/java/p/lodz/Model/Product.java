@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 public class Product {
 
     @BsonProperty("_id")
-    private Long id;
+    private ObjectId id;
     @BsonProperty("product_name")
     private String productName;
     @BsonProperty("base_cost")
@@ -26,7 +26,7 @@ public class Product {
     private String description;
 
     @BsonCreator
-    public Product(@BsonProperty("_id") Long id,
+    public Product(@BsonProperty("_id") ObjectId id,
                    @BsonProperty("product_name") String productName,
                    @BsonProperty("base_cost") double baseCost,
                    @BsonProperty("discount") double discount,
@@ -46,6 +46,7 @@ public class Product {
                    double baseCost,
                    int numberOfProducts,
                    String description) {
+        this.id = new ObjectId();
         this.productName = productName;
         this.baseCost = baseCost;
         this.numberOfProducts = numberOfProducts;

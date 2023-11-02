@@ -21,7 +21,7 @@ public class App {
         final MongoClient mongoClient = MongoClients.create(connectionString);
         final MongoDatabase mongoDatabase = mongoClient.getDatabase("nbddb");
         ProductRepository  productRepository = new ProductRepositoryMongoImpl(mongoDatabase.getCollection("product"));
-        Product product = new Product(1L, "aaa", 10, 1, false, 10, "aabb");
+        Product product = new Product("bbb", 10, 1, "aabb");
         productRepository.saveProduct(product);
 
 

@@ -16,7 +16,6 @@ import p.lodz.Repositiories.ClientRepository;
 import p.lodz.Repositiories.ClientTypeRepository;
 import p.lodz.Repositiories.Implementations.ClientRepositoryImpl;
 import p.lodz.Repositiories.Implementations.ClientTypeRepositoryImpl;
-import p.lodz.Repositiories.Implementations.ProductRepositoryImpl;
 import p.lodz.Repositiories.Implementations.PurchaseRepositoryImpl;
 import p.lodz.Repositiories.ProductRepository;
 import p.lodz.Repositiories.PurchaseRepository;

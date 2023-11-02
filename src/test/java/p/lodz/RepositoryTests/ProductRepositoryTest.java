@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import p.lodz.Model.Product;
-import p.lodz.Repositiories.Implementations.ProductRepositoryImpl;
 import p.lodz.Repositiories.ProductRepository;
 import static org.junit.jupiter.api.Assertions.*;
 

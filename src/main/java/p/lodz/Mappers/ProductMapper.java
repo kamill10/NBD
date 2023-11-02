@@ -6,7 +6,7 @@ import p.lodz.Model.Product;
 public class ProductMapper {
     public static Product fromMongoProduct(Document product) {
         return new Product(
-                product.getLong("_id"),
+                product.getObjectId("_id"),
                 product.getString("product_name"),
                 product.getDouble("base_cost"),
                 product.getDouble("discount"),

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,27 +15,23 @@ import java.util.List;
 import static com.google.common.base.MoreObjects.toStringHelper;
 
 @Getter
-@Entity
+@Setter
 @NoArgsConstructor
-public class Purchase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Purchase extends AbstractEntity{
 
-    @Column(name = "purchase_date")
+    @BsonProperty("purchasedate")
     private LocalDate purchaseDate;
 
-    @Column(name = "delivery_date")
+    @BsonProperty("deliverydate")
     private LocalDate deliveryDate;
 
-    @Column(name = "final_cost")
-    @Min(value = 0)
+    @BsonProperty("finalcost")
     private double finalCost;
 
-    @ManyToOne
+    @BsonProperty("client")
     private Client client;
 
-    @ManyToMany
+    @BsonProperty("products")
     private List<Product> products;
 
     public Purchase(Client client, List<Product> products) {
@@ -54,6 +53,20 @@ public class Purchase {
         client.addMoneySpent(finalCost);
     }
 
+    @BsonCreator
+    public Purchase(@BsonProperty("purchasedate") LocalDate purchaseDate,
+                    @BsonProperty("deliverydate") LocalDate deliveryDate,
+                    @BsonProperty("finalcost") double finalCost,
+                    @BsonProperty("client") Client client,
+                    @BsonProperty("products") List<Product> products){
+        this.purchaseDate = purchaseDate;
+        this.deliveryDate = deliveryDate;
+        this.finalCost = finalCost;
+        this.client = client;
+        this.products = products;
+
+    }
+
     private void setDeliveryTime(){
         deliveryDate = purchaseDate.plusDays(3 - client.getClientShorterDeliveryTime());
     }
@@ -69,7 +82,7 @@ public class Purchase {
     @Override
     public String toString() {
         return toStringHelper(this)
-                .add("purchaseId", id)
+                .add("purchaseId", getEntityId())
                 .add("purchaseDate", purchaseDate)
                 .add("deliveryDate", deliveryDate)
                 .add("finalCost", finalCost)

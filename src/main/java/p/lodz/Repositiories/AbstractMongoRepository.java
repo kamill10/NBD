@@ -45,7 +45,7 @@ public class AbstractMongoRepository implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        database.drop();
+//        database.drop();
         mongoClient.close();
     }
 }

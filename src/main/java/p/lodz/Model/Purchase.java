@@ -36,9 +36,9 @@ public class Purchase extends AbstractEntity{
     private Client client;
 
     @BsonProperty("products")
-    private Map<Product, Integer> products;
+    private List<ProductEntry> products;
 
-    public Purchase(Client client, Map<Product, Integer> products) {
+    public Purchase(Client client, List<ProductEntry> products) {
         this.client = client;
         this.products = products;
         purchaseDate = LocalDate.now();
@@ -52,7 +52,7 @@ public class Purchase extends AbstractEntity{
                     @BsonProperty("deliverydate") LocalDate deliveryDate,
                     @BsonProperty("finalcost") double finalCost,
                     @BsonProperty("client") Client client,
-                    @BsonProperty("products") Map<Product, Integer> products){
+                    @BsonProperty("products") List<ProductEntry> products){
         this.purchaseDate = purchaseDate;
         this.deliveryDate = deliveryDate;
         this.finalCost = finalCost;
@@ -65,12 +65,10 @@ public class Purchase extends AbstractEntity{
         deliveryDate = purchaseDate.plusDays(3 - client.getClientShorterDeliveryTime());
     }
 
-    private void setFinalCost(){
-//        for(Product product : products) {
-//            finalCost += product.getBaseCost() -
-//                    product.getBaseCost() * product.getDiscount() -
-//                    client.getClientDiscount() * product.getBaseCost();
-//        }
+    private void setFinalCost() {
+        products.forEach(e -> {
+            finalCost += e.getCost();
+        });
 
     }
 }

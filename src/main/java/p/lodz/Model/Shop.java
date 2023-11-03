@@ -20,7 +20,7 @@ public class Shop {
     public Shop(MongoDatabase database) {
         clientManager = new ClientManager(database.getCollection("client", Client.class));
         productManager = new ProductManager(database.getCollection("product", Product.class));
-        purchaseManager = new PurchaseManager(database.getCollection("purchase", Purchase.class));
+        purchaseManager = new PurchaseManager(database.getCollection("purchase", Purchase.class), database.getCollection("product", Product.class));
     }
 
 }

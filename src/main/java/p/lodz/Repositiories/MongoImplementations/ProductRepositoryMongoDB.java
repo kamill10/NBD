@@ -32,9 +32,9 @@ public class ProductRepositoryMongoDB implements ProductRepository {
     }
 
     @Override
-    public Product decrementNumberOfProducts(ObjectId id) {
+    public Product decrementNumberOfProducts(ObjectId id, int quantity) {
         return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
-                Updates.inc("number_of_products", -1),
+                Updates.inc("number_of_products", -quantity),
                 new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
     }
 

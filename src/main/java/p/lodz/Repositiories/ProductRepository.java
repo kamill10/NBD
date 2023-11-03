@@ -8,7 +8,7 @@ import java.util.List;
 public interface ProductRepository {
     Product saveProduct(Product product);
     Product archiveProduct(ObjectId id);
-    Product decrementNumberOfProducts(ObjectId id);
+    Product decrementNumberOfProducts(ObjectId id, int quantity);
     Product findProductById(ObjectId id);
     List<Product> findAllProducts();
     boolean deleteProduct(ObjectId id);

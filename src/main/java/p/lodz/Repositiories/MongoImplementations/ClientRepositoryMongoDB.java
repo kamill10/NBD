@@ -45,7 +45,7 @@ public class ClientRepositoryMongoDB implements ClientRepository {
 
     @Override
     public Client findClientById(ObjectId id) {
-        return clientsCollection.findOneAndDelete(Filters.eq("_id", id));
+        return  clientsCollection.find(Filters.eq("_id", id)).first();
     }
 
     @Override

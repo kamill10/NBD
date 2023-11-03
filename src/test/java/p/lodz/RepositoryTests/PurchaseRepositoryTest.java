@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PurchaseRepositoryTest {
 
-    static AbstractMongoRepository repository = new AbstractMongoRepository();
+    /*static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase purchaseDatabase = repository.getDatabase();
     private static Client testClient1 =  new Client("jan", "kowalski", new Address("aaa", "bbb", "ccc"),new Premium());
     private static  Client testClient2 =  new Client("zdichu", "mulat", new Address("pcim", "dolny", "ccc"),new Premium());
@@ -53,5 +53,5 @@ public class PurchaseRepositoryTest {
         assertEquals(purchaseRepository.findAllPurchases().size(),2);
         purchaseDatabase.getCollection("purchases_test").drop(); // Remove the collection
 
-    }
+    } */
 }

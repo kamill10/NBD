@@ -63,8 +63,4 @@ public class Client extends AbstractEntity {
         this.moneySpent = money;
         this.address = address;
     }
-
-    public ObjectId getId(){
-        return this.getEntityId();
-    }
 }

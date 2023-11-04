@@ -1,11 +1,13 @@
 package p.lodz.Model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ProductEntry {
-    private final Product product;
-    private final int quantity;
+    private Product product;
+    private int quantity;
 
     public ProductEntry(Product product, int quantity) {
         this.product = product;

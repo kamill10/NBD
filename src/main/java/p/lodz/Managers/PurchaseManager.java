@@ -45,7 +45,7 @@ public class PurchaseManager {
             session.startTransaction(TransactionOptions.builder().writeConcern(WriteConcern.MAJORITY)
                     .readConcern(ReadConcern.MAJORITY)
                     .build());
-            if(product.getProduct().getNumberOfProducts() < product.getQuantity()){
+            if(product.getProduct().getNumberOfProducts() < product.getQuantity() || product.getProduct().isArchived()){
                 session.abortTransaction();
                 session.close();
                 return purchase;

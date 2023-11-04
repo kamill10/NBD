@@ -37,7 +37,7 @@ public class PurchaseRepositoryMongoDB implements PurchaseRepository {
 
     @Override
     public List<Purchase> findAllClientPurchases(Client client) {
-        return purchasesCollection.find(Filters.eq("client", client)).into(new ArrayList<>());
+        return purchasesCollection.find(Filters.eq("client._id", client.getEntityId())).into(new ArrayList<>());
     }
 
 }

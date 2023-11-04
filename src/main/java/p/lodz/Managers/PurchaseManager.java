@@ -1,9 +1,6 @@
 package p.lodz.Managers;
 
-import com.mongodb.MongoCommandException;
-import com.mongodb.ReadConcern;
-import com.mongodb.TransactionOptions;
-import com.mongodb.WriteConcern;
+import com.mongodb.*;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import jakarta.persistence.LockModeType;
@@ -49,12 +46,14 @@ public class PurchaseManager {
                 session.abortTransaction();
                 session.close();
                 return purchase;
+            } else if (product.getProduct().getNumberOfProducts() == product.getQuantity()) {
+                productRepository.archiveProduct(product.getProduct().getEntityId(), true);
             }
             productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
             purchase = new Purchase(customer, product);
             purchase = purchaseRepository.savePurchase(purchase);
             session.commitTransaction();
-        }catch (MongoCommandException e) {
+        }catch (MongoException e) {
             session.abortTransaction();
         } finally {
             session.close();

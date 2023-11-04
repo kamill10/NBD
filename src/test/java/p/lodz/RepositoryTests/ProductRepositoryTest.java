@@ -7,6 +7,7 @@ import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Model.Client;
 import p.lodz.Model.Product;
 import p.lodz.Repositiories.AbstractMongoRepository;
@@ -31,15 +32,17 @@ public class ProductRepositoryTest {
     @Test
     void archiveProductTest() {
         Product savedProduct = productRepository.saveProduct(new Product("skora", 1, 1, "aaa"));
-       Product product1 = productRepository.archiveProduct(savedProduct.getEntityId());
+       Product product1 = productRepository.archiveProduct(savedProduct.getEntityId(), true);
         assertTrue(product1.isArchived());
     }
 
     @Test
     void decrementNumberOfProductTest() {
         Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
-       Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
+        Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
         assertEquals(0, productAfterDecrement.getNumberOfProducts());
+        assertThrows(InvalidDataException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1));
+        assertEquals(0, productRepository.findProductById(savedProduct.getEntityId()).getNumberOfProducts());
        // assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(savedProduct.getEntityId());});
     }
 

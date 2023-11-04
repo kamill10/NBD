@@ -2,12 +2,14 @@ package p.lodz.Model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 @Getter
 @Setter
+@ToString
 public class Product extends AbstractEntity {
 
 //    @BsonProperty("_id")

@@ -10,17 +10,24 @@ import lombok.Getter;
 import p.lodz.Managers.ClientManager;
 import p.lodz.Managers.ProductManager;
 import p.lodz.Managers.PurchaseManager;
+import p.lodz.Repositiories.AbstractMongoRepository;
 
 @Getter
-public class Shop {
+public class Shop implements AutoCloseable{
     private final ClientManager clientManager;
     private final ProductManager productManager;
     private final PurchaseManager purchaseManager;
+    private final AbstractMongoRepository repository;
 
-    public Shop(MongoDatabase database) {
-        clientManager = new ClientManager(database.getCollection("client", Client.class));
-        productManager = new ProductManager(database.getCollection("product", Product.class));
-        purchaseManager = new PurchaseManager(database.getCollection("purchase", Purchase.class), database.getCollection("product", Product.class));
+    public Shop() {
+        repository = new AbstractMongoRepository();
+        clientManager = new ClientManager(repository.getDatabase().getCollection("clients", Client.class));
+        productManager = new ProductManager(repository.getDatabase().getCollection("products", Product.class));
+        purchaseManager = new PurchaseManager(repository.getDatabase().getCollection("purchases", Purchase.class), repository.getDatabase().getCollection("product", Product.class), repository);
     }
 
+    @Override
+    public void close() throws Exception {
+        repository.close();
+    }
 }

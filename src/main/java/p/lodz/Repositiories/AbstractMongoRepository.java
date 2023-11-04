@@ -3,6 +3,7 @@ package p.lodz.Repositiories;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -34,6 +35,10 @@ public class AbstractMongoRepository implements AutoCloseable {
 
     private MongoClient mongoClient;
     private MongoDatabase database;
+
+    public ClientSession getClientSession(){
+        return mongoClient.startSession();
+    }
 
 
     private void initDbConnection() {

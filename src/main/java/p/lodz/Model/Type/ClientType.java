@@ -14,8 +14,8 @@ import org.bson.types.ObjectId;
 @BsonDiscriminator(key = "_clazz")
 public abstract class ClientType {
 
-    @BsonProperty("_id")
-    protected ObjectId id;
+//    @BsonProperty("_id")
+//    protected ObjectId id;
 
     @BsonProperty("clientdiscount")
     protected double clientDiscount;
@@ -26,7 +26,7 @@ public abstract class ClientType {
     @BsonCreator
     public ClientType(@BsonProperty("clientdiscount") double clientDiscount,
                       @BsonProperty("shorterdeliverytime") int shorterDeliveryTime) {
-        this.id = new ObjectId();
+//        this.id = new ObjectId();
         this.clientDiscount = clientDiscount;
         this.shorterDeliveryTime = shorterDeliveryTime;
     }

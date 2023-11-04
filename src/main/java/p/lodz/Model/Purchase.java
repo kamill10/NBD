@@ -8,12 +8,10 @@ import lombok.Setter;
 import lombok.ToString;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
@@ -39,8 +37,18 @@ public class Purchase extends AbstractEntity{
     private List<ProductEntry> products;
 
     public Purchase(Client client, List<ProductEntry> products) {
+        super(new ObjectId());
         this.client = client;
         this.products = products;
+        purchaseDate = LocalDate.now();
+        setDeliveryTime();
+        setFinalCost();
+        client.addMoneySpent(finalCost);
+    }
+    public Purchase(Client client, ProductEntry product) {
+        super(new ObjectId());
+        this.client = client;
+        this.products = new ArrayList<>(Arrays.asList(product));
         purchaseDate = LocalDate.now();
         setDeliveryTime();
         setFinalCost();

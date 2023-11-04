@@ -19,10 +19,11 @@ import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.ClientTypeRepositoryMongoDB;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClientRepositoryTest {
 
-   /* static AbstractMongoRepository repository = new AbstractMongoRepository();
+    static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase mongoDatabase = repository.getDatabase();
     static ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients_test", Client.class),mongoDatabase.getCollection("types",ClientType.class));
 
@@ -47,17 +48,18 @@ public class ClientRepositoryTest {
     @Test
     void findClientByIdTest() {
         Client client = clientRepository.saveClient(testClient2);
-        assertEquals(clientRepository.findClientById(client.getEntityId()), client);
+        assertTrue(clientRepository.findClientById(testClient2.getEntityId()).equals(client));
+    }
+
+    @Test
+    void findAllClients(){
+        assertEquals(clientRepository.findAllClients().size(), 2);
     }
 
     @AfterAll
     static void cleanDataBase() {
         // Remove the collection after tests
-        assertEquals(clientRepository.findAllClients().size(), 2);
-        //Document command = new Document("replSetStepDown", 60); // 60 to czas wyłączenia w sekundach
-        //mongoDatabase.runCommand(command);
-        assertEquals(clientRepository.findAllClients().size(), 2);
         mongoDatabase.getCollection("clients_test").drop();
         mongoDatabase.getCollection("types").drop();
-    } */
+    }
 }

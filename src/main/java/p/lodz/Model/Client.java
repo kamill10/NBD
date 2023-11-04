@@ -64,7 +64,9 @@ public class Client extends AbstractEntity {
         this.address = address;
     }
 
-    public ObjectId getId(){
-        return this.getEntityId();
-    }
+
+//    @BsonIgnore
+//    public ObjectId getId(){
+//        return this.getEntityId();
+//    }
 }

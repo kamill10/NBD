@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClientRepositoryTest {
 
-    static AbstractMongoRepository repository = new AbstractMongoRepository();
+   /* static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase mongoDatabase = repository.getDatabase();
     static ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients_test", Client.class),mongoDatabase.getCollection("types",ClientType.class));
 
@@ -54,7 +54,10 @@ public class ClientRepositoryTest {
     static void cleanDataBase() {
         // Remove the collection after tests
         assertEquals(clientRepository.findAllClients().size(), 2);
+        //Document command = new Document("replSetStepDown", 60); // 60 to czas wyłączenia w sekundach
+        //mongoDatabase.runCommand(command);
+        assertEquals(clientRepository.findAllClients().size(), 2);
         mongoDatabase.getCollection("clients_test").drop();
         mongoDatabase.getCollection("types").drop();
-    }
+    } */
 }

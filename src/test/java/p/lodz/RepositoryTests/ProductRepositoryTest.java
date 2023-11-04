@@ -4,6 +4,7 @@ import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.bson.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,6 @@ public class ProductRepositoryTest {
     static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase productDatabase = repository.getDatabase();
     static ProductRepositoryMongoDB productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products_test", Product.class));
-
 
 
     @Test
@@ -56,8 +56,12 @@ public class ProductRepositoryTest {
         productRepository.saveProduct(product);
         productRepository.saveProduct(product2);
     }
+
     @AfterAll
     static void cleanDataBase(){
+        assertEquals(productRepository.findAllProducts().size(),6);
+        //Document command = new Document("replSetStepDown", 60); // 60 to czas wyłączenia w sekundach
+        //productDatabase.runCommand(command);
         assertEquals(productRepository.findAllProducts().size(),6);
         productDatabase.getCollection("products_test").drop(); // Remove the collection
 

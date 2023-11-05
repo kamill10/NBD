@@ -25,7 +25,7 @@ public class ClientRepositoryTest {
 
     static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase mongoDatabase = repository.getDatabase();
-    static ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients_test", Client.class),mongoDatabase.getCollection("types",ClientType.class));
+    static ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients_test", Client.class));
 
     // Initialize test clients
     Client testClient1 = new Client(
@@ -63,6 +63,5 @@ public class ClientRepositoryTest {
         //mongoDatabase.runCommand(command);
         assertEquals(clientRepository.findAllClients().size(), 2);
         mongoDatabase.getCollection("clients_test").drop();
-        mongoDatabase.getCollection("types").drop();
     }
 }

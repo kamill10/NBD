@@ -15,16 +15,16 @@ import p.lodz.Model.Type.ClientType;
 @NoArgsConstructor
 public class Client extends AbstractEntity {
 
-    @BsonProperty("firstname")
+    @BsonProperty("first_name")
     private String firstName;
-    @BsonProperty("lastname")
+    @BsonProperty("last_name")
     private String lastName;
     @BsonProperty("address")
     Address address;
-    @BsonProperty("clienttype")
+    @BsonProperty("client_type")
     ClientType clientType;
 
-    @BsonProperty("moneyspent")
+    @BsonProperty("money_spent")
     private double moneySpent = 0;
 
     public Client( String firstName, String lastName, Address address, ClientType clientType) {
@@ -51,10 +51,10 @@ public class Client extends AbstractEntity {
 
     @BsonCreator
     public Client(@BsonProperty("_id") ObjectId entityId,
-                  @BsonProperty("firstname") String firstName,
-                  @BsonProperty("lastname") String lastName,
-                  @BsonProperty("clienttype") ClientType clientType,
-                  @BsonProperty("moneyspent") double money,
+                  @BsonProperty("first_name") String firstName,
+                  @BsonProperty("last_name") String lastName,
+                  @BsonProperty("client_type") ClientType clientType,
+                  @BsonProperty("money_spent") double money,
                   @BsonProperty("address") Address address) {
         super(entityId);
         this.firstName = firstName;
@@ -63,10 +63,4 @@ public class Client extends AbstractEntity {
         this.moneySpent = money;
         this.address = address;
     }
-
-
-//    @BsonIgnore
-//    public ObjectId getId(){
-//        return this.getEntityId();
-//    }
 }

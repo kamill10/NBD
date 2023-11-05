@@ -77,10 +77,10 @@ public class PurchaseManager {
             Iterator<ProductEntry> iterator = products.iterator();
             while (iterator.hasNext()) {
                 ProductEntry product = iterator.next();
-                if(product.getProduct().getNumberOfProducts() < product.getQuantity() || product.getProduct().isArchived()){
-                    iterator.remove();
-                    continue;
-                }
+//                if(product.getProduct().getNumberOfProducts() < product.getQuantity() || product.getProduct().isArchived()){
+//                    iterator.remove();
+//                    continue;
+//                }
                 productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
             }
             if (products.isEmpty()){

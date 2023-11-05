@@ -24,16 +24,6 @@ public class Address implements Serializable {
     @BsonProperty
     private String number;
 
-//    public String getAddressInfo(){
-//        return city + " " + street + " " + number;
-//    }
-
-//    public Address(String city, String street, String number) {
-//        this.city = city;
-//        this.street = street;
-//        this.number = number;
-//    }
-
     @BsonCreator
     public Address(@BsonProperty("city") String city,
                    @BsonProperty("street") String street,

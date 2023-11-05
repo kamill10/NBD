@@ -16,9 +16,7 @@ import java.util.List;
 
 public class ClientRepositoryMongoDB implements ClientRepository {
 
-    private MongoCollection<Client> clientsCollection;
-    private MongoCollection<ClientType> clientTypeRepository;
-
+    private final MongoCollection<Client> clientsCollection;
 
     public ClientRepositoryMongoDB(MongoCollection<Client> clientsCollection) {
         this.clientsCollection = clientsCollection;

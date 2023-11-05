@@ -4,6 +4,7 @@ import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.bson.Document;
 import org.junit.jupiter.api.*;
 import p.lodz.Model.*;
 import p.lodz.Model.Type.ClientType;
@@ -14,6 +15,7 @@ import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.PurchaseRepositoryMongoDB;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,11 +27,11 @@ public class PurchaseRepositoryTest {
     private static Client testClient1 =  new Client("jan", "kowalski", new Address("aaa", "bbb", "ccc"),new Premium());
     private static  Client testClient2 =  new Client("zdichu", "mulat", new Address("pcim", "dolny", "ccc"),new Premium());
 
-    static Product product = new Product("aaa", 1, 1, "aaa");
-    static Product product2 = new Product("buty", 1, 1, "luksusowe buty arktyczne");
+    static Product product = new Product("aaa", 10, 2, "aaa");
+    static Product product2 = new Product("buty", 20, 3, "luksusowe buty arktyczne");
     static PurchaseRepositoryMongoDB purchaseRepository  = new PurchaseRepositoryMongoDB(purchaseDatabase.getCollection("purchases_test",Purchase.class));
-    Purchase purchase1 = new Purchase(testClient1,new ProductEntry(product, 1));
-    Purchase purchase2 = new Purchase(testClient2,new ProductEntry(product2, 1));
+    Purchase purchase1 = new Purchase(testClient1,new ProductEntry(product, 2));
+    Purchase purchase2 = new Purchase(testClient2,new ProductEntry(product2, 3));
 
     @Test
     @Order(1)
@@ -53,6 +55,20 @@ public class PurchaseRepositoryTest {
     @Order(4)
     void findAllPurchases(){
         assertEquals(purchaseRepository.findAllPurchases().size(), 2);
+    }
+
+    @Test
+    @Order(5)
+    void primaryNodeDisabled() {
+        Document command = new Document("replSetStepDown", 60);
+        purchaseDatabase.runCommand(command);
+        assertEquals(purchaseRepository.findAllPurchases().size(), 2);
+        List<Purchase> purchases = purchaseRepository.findAllPurchases();
+        assertEquals(purchases.size(), 2);
+        double finalCost = purchases.stream()
+                .mapToDouble(Purchase::getFinalCost)
+                .sum();
+        assertEquals(finalCost, 80);
     }
 
     @AfterAll

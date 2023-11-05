@@ -38,9 +38,10 @@ public class ProductRepositoryTest {
     @Test
     void decrementNumberOfProductTest() {
         Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
-       Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
+        Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
         assertEquals(0, productAfterDecrement.getNumberOfProducts());
-       // assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(savedProduct.getEntityId());});
+        assertTrue(productAfterDecrement.isArchived());
+        assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(productAfterDecrement.getEntityId(),1);});
     }
 
     @Test
@@ -60,7 +61,7 @@ public class ProductRepositoryTest {
     @AfterAll
     static void cleanDataBase(){
         assertEquals(productRepository.findAllProducts().size(),6);
-        //Document command = new Document("replSetStepDown", 60); // 60 to czas wyłączenia w sekundach
+        //Document command = new Document("replSetStepDown", 60);
         //productDatabase.runCommand(command);
         assertEquals(productRepository.findAllProducts().size(),6);
         productDatabase.getCollection("products_test").drop(); // Remove the collection

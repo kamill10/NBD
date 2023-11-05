@@ -59,6 +59,9 @@ public class ClientRepositoryTest {
     @AfterAll
     static void cleanDataBase() {
         // Remove the collection after tests
+        //Document command = new Document("replSetStepDown", 60);
+        //mongoDatabase.runCommand(command);
+        assertEquals(clientRepository.findAllClients().size(), 2);
         mongoDatabase.getCollection("clients_test").drop();
         mongoDatabase.getCollection("types").drop();
     }

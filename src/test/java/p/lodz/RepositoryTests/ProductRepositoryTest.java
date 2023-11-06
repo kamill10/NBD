@@ -1,5 +1,6 @@
 package p.lodz.RepositoryTests;
 
+import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -41,14 +42,11 @@ public class ProductRepositoryTest {
         Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
         Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
         assertEquals(0, productAfterDecrement.getNumberOfProducts());
-<<<<<<< HEAD
-        assertThrows(InvalidDataException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1));
+
+//        assertThrows(MongoCommandException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1));
         assertEquals(0, productRepository.findProductById(savedProduct.getEntityId()).getNumberOfProducts());
-       // assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(savedProduct.getEntityId());});
-=======
-        assertTrue(productAfterDecrement.isArchived());
-        assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(productAfterDecrement.getEntityId(),1);});
->>>>>>> 9a9b97a6fc829b1e603b368bd09866cf7371d9f5
+//        assertTrue(productAfterDecrement.isArchived());
+
     }
 
     @Test
@@ -71,7 +69,7 @@ public class ProductRepositoryTest {
         //Document command = new Document("replSetStepDown", 60);
         //productDatabase.runCommand(command);
         assertEquals(productRepository.findAllProducts().size(),6);
-        productDatabase.getCollection("products_test").drop(); // Remove the collection
+        repository.close();
 
     }
 

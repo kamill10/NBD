@@ -39,26 +39,29 @@ public class PurchaseManager {
         }
         Purchase purchase = null;
         ClientSession session = repository.getClientSession();
-        try {
+        try(session) {
             session.startTransaction(TransactionOptions.builder().writeConcern(WriteConcern.MAJORITY)
                     .readConcern(ReadConcern.MAJORITY)
                     .build());
             if(product.getProduct().getNumberOfProducts() < product.getQuantity() || product.getProduct().isArchived()){
                 session.abortTransaction();
-                session.close();
                 return purchase;
-            } else if (product.getProduct().getNumberOfProducts() == product.getQuantity()) {
-                productRepository.archiveProduct(product.getProduct().getEntityId(), true);
             }
-            productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
+            try {
+                productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
+                if(product.getProduct().getNumberOfProducts() == product.getQuantity()) {
+                    productRepository.archiveProduct(product.getProduct().getEntityId(), true);
+                }
+            } catch (MongoCommandException e){
+                session.abortTransaction();
+                return purchase;
+            }
+
             purchase = new Purchase(customer, product);
             purchase = purchaseRepository.savePurchase(purchase);
             session.commitTransaction();
-        }catch (MongoException e) {
+        }catch (Exception e) {
             session.abortTransaction();
-        } finally {
-            session.close();
-
         }
 
         return purchase;
@@ -70,40 +73,38 @@ public class PurchaseManager {
         }
         Purchase purchase = null;
         ClientSession session = repository.getClientSession();
-        try {
+        try(session) {
             session.startTransaction(TransactionOptions.builder().writeConcern(WriteConcern.MAJORITY)
                     .readConcern(ReadConcern.MAJORITY)
                     .build());
             Iterator<ProductEntry> iterator = products.iterator();
             while (iterator.hasNext()) {
                 ProductEntry product = iterator.next();
-//                if(product.getProduct().getNumberOfProducts() < product.getQuantity() || product.getProduct().isArchived()){
-//                    iterator.remove();
-//                    continue;
-//                }
+                if(product.getProduct().getNumberOfProducts() < product.getQuantity() || product.getProduct().isArchived()){
+                    iterator.remove();
+                    continue;
+                }
                 try {
                     productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
+                    if(product.getProduct().getNumberOfProducts() == product.getQuantity()) {
+                        productRepository.archiveProduct(product.getProduct().getEntityId(), true);
+                    }
                 } catch (MongoCommandException e){
                     iterator.remove();
-                    System.out.println("Usunieto");
                 }
 
             }
             if (products.isEmpty()){
                 session.abortTransaction();
-                session.close();
                 return purchase;
             }
 
             purchase = new Purchase(customer, products);
             purchase = purchaseRepository.savePurchase(purchase);
             session.commitTransaction();
-        }catch (MongoCommandException e) {
+        }catch (Exception e) {
 
             session.abortTransaction();
-        } finally {
-            session.close();
-
         }
 
         return purchase;

@@ -6,6 +6,7 @@ import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
 import p.lodz.Model.Type.PremiumDeluxe;
 import p.lodz.Model.Type.Standard;
+import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,9 @@ public class App {
             Client clnt = shop.getRepository().getDatabase().getCollection("clients", Client.class).find(Filters.eq("_id", client2.getEntityId())).first();
 //            System.out.println(clnt);
             shop.getRepository().getDatabase().getCollection("products").find().forEach(System.out::println);
-<<<<<<< HEAD
 //            shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
 //            System.out.println(clientRepository.findClientById(client2.getEntityId()));
-=======
             shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
->>>>>>> 9a9b97a6fc829b1e603b368bd09866cf7371d9f5
         } catch (Exception e){
             e.printStackTrace();
         }

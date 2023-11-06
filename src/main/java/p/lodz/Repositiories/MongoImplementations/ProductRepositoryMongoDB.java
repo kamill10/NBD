@@ -36,17 +36,17 @@ public class ProductRepositoryMongoDB implements ProductRepository {
     @Override
     public Product decrementNumberOfProducts(ObjectId id, int quantity) {
         Product product = mongoCollection.find(Filters.eq("_id", id)).first();
-        if(product.getNumberOfProducts() -quantity < 0) {
-            throw new RuntimeException("The number of available products is to little");
-        }
-        else if(product.getNumberOfProducts() -quantity == 0) {
-            Bson combinedUpdates = Updates.combine(
-                    Updates.set("archived", true),
-                    Updates.inc("number_of_products", -quantity));
-            return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
-                    combinedUpdates,
-                    new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
-        }
+//        if(product.getNumberOfProducts() -quantity < 0) {
+//            throw new InvalidDataException("The number of available products is to little");
+//        }
+//        else if(product.getNumberOfProducts() -quantity == 0) {
+//            Bson combinedUpdates = Updates.combine(
+//                    Updates.set("archived", true),
+//                    Updates.inc("number_of_products", -quantity));
+//            return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
+//                    combinedUpdates,
+//                    new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
+//        }
         return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
                 Updates.inc("number_of_products", -quantity),
                 new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));

@@ -5,6 +5,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import jakarta.persistence.LockModeType;
 import org.bson.types.ObjectId;
+import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Exceptions.InvalidPurchaseException;
 import p.lodz.Model.*;
 import p.lodz.Repositiories.AbstractMongoRepository;
@@ -80,7 +81,13 @@ public class PurchaseManager {
 //                    iterator.remove();
 //                    continue;
 //                }
-                productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
+                try {
+                    productRepository.decrementNumberOfProducts(product.getProduct().getEntityId(), product.getQuantity());
+                } catch (MongoCommandException e){
+                    iterator.remove();
+                    System.out.println("Usunieto");
+                }
+
             }
             if (products.isEmpty()){
                 session.abortTransaction();
@@ -92,6 +99,7 @@ public class PurchaseManager {
             purchase = purchaseRepository.savePurchase(purchase);
             session.commitTransaction();
         }catch (MongoCommandException e) {
+
             session.abortTransaction();
         } finally {
             session.close();

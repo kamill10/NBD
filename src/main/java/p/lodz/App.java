@@ -1,5 +1,6 @@
 package p.lodz;
 
+import com.mongodb.MongoException;
 import com.mongodb.client.model.Filters;
 import p.lodz.Model.*;
 import p.lodz.Model.Type.ClientType;
@@ -26,18 +27,26 @@ public class App {
 
             ProductRepositoryMongoDB testRepo = new ProductRepositoryMongoDB(shop.getRepository().getDatabase().getCollection("products", Product.class));
             Product productTest = shop.getProductManager().registerProduct("NegativeTest", 120, 1, "casf");
-            try {
-                testRepo.decrementNumberOfProducts(productTest.getEntityId(), 2);
-                System.out.println(testRepo.findProductById(productTest.getEntityId()).toString());
-            }catch (Exception e){
-                System.out.println(e.toString());
-                System.out.println(testRepo.findProductById(productTest.getEntityId()));
-            }
+//            try {
+//                testRepo.decrementNumberOfProducts(productTest.getEntityId(), 2);
+//                System.out.println(testRepo.findProductById(productTest.getEntityId()).toString());
+//                System.out.println("Blad zakupu");
+//            }catch (Exception e){
+//                System.out.println("Blad zakup2");
+//                System.out.println(e.toString());
+//                System.out.println(testRepo.findProductById(productTest.getEntityId()));
+//            }
 
             List<ProductEntry> purchases = new ArrayList<>();
             purchases.add(new ProductEntry(product, 1));
             purchases.add(new ProductEntry(product1, 5));
-            Purchase purchase1 = shop.getPurchaseManager().registerPurchase(client, purchases);
+            try {
+                Purchase purchase1 = shop.getPurchaseManager().registerPurchase(client, purchases);
+            } catch (MongoException e){
+
+                e.printStackTrace();
+            }
+
 //            shop.getRepository().getDatabase().getCollection("clients").find().forEach(System.out::println);
 //            System.out.println(client2);
             Client clnt = shop.getRepository().getDatabase().getCollection("clients", Client.class).find(Filters.eq("_id", client2.getEntityId())).first();

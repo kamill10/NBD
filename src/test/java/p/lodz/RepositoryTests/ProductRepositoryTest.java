@@ -4,6 +4,7 @@ import com.mongodb.client.MongoDatabase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.bson.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,6 @@ public class ProductRepositoryTest {
     static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase productDatabase = repository.getDatabase();
     static ProductRepositoryMongoDB productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products_test", Product.class));
-
 
 
     @Test
@@ -41,9 +41,14 @@ public class ProductRepositoryTest {
         Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
         Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
         assertEquals(0, productAfterDecrement.getNumberOfProducts());
+<<<<<<< HEAD
         assertThrows(InvalidDataException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1));
         assertEquals(0, productRepository.findProductById(savedProduct.getEntityId()).getNumberOfProducts());
        // assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(savedProduct.getEntityId());});
+=======
+        assertTrue(productAfterDecrement.isArchived());
+        assertThrows(RuntimeException.class, () -> {productRepository.decrementNumberOfProducts(productAfterDecrement.getEntityId(),1);});
+>>>>>>> 9a9b97a6fc829b1e603b368bd09866cf7371d9f5
     }
 
     @Test
@@ -59,8 +64,12 @@ public class ProductRepositoryTest {
         productRepository.saveProduct(product);
         productRepository.saveProduct(product2);
     }
+
     @AfterAll
     static void cleanDataBase(){
+        assertEquals(productRepository.findAllProducts().size(),6);
+        //Document command = new Document("replSetStepDown", 60);
+        //productDatabase.runCommand(command);
         assertEquals(productRepository.findAllProducts().size(),6);
         productDatabase.getCollection("products_test").drop(); // Remove the collection
 

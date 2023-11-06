@@ -1,13 +1,8 @@
 package p.lodz.Model;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.ValidationOptions;
-import jakarta.persistence.EntityManager;
-import jakarta.validation.Validator;
+import com.mongodb.MongoCommandException;
 import lombok.Getter;
 import org.bson.Document;
 import p.lodz.Managers.ClientManager;
@@ -24,9 +19,90 @@ public class Shop implements AutoCloseable{
 
     public Shop() {
         repository = new AbstractMongoRepository();
+        createPurchaseCollectionWithValidations();
+        createProductCollectionWithValidations();
         clientManager = new ClientManager(repository.getDatabase().getCollection("clients", Client.class));
         productManager = new ProductManager(repository.getDatabase().getCollection("products", Product.class));
-        purchaseManager = new PurchaseManager(repository.getDatabase().getCollection("purchases", Purchase.class), repository.getDatabase().getCollection("product", Product.class), repository);
+        purchaseManager = new PurchaseManager(repository.getDatabase().getCollection("purchases", Purchase.class), repository.getDatabase().getCollection("products", Product.class), repository);
+    }
+
+    private void createPurchaseCollectionWithValidations() {
+        Document validator = Document.parse("""
+                            {
+                                $jsonSchema:{
+                                    "bsonType": "object",
+                                    "required": ["client", "delivery_date", "final_cost", "products", "purchase_date"],
+                                    "properties": {
+                                        "client": {
+                                            "bsonType": "object"
+                                        },
+                                        "delivery_date": {
+                                            "bsonType": "date"
+                                        },
+                                        "final_cost": {
+                                            "bsonType": "double",
+                                            "minimum": 0
+                                        },
+                                        "products": {
+                                            "bsonType": "array"
+                                        },
+                                        "purchase_date": {
+                                            "bsonType": "date"
+                                        }
+                                    }
+                                }
+                            }
+                        """);
+        try {
+            ValidationOptions validationOptions = new ValidationOptions().validator(validator);
+            CreateCollectionOptions createCollectionOptions = new CreateCollectionOptions().validationOptions(validationOptions);
+            repository.getDatabase().createCollection("purchases", createCollectionOptions);
+        } catch (MongoCommandException ignored) {
+            Document command = new Document("collMod", "purchases").append("validator", validator);
+            repository.getDatabase().runCommand(command);
+        }
+
+    }
+
+    private void createProductCollectionWithValidations() {
+        Document validator = Document.parse("""
+                            {
+                                $jsonSchema:{
+                                    "bsonType": "object",
+                                    "required": ["archived", "base_cost", "description", "discount", "number_of_products", "product_name"],
+                                    "properties": {
+                                        "archived": {
+                                            "bsonType": "bool"
+                                        },
+                                        "base_cost": {
+                                            "bsonType": "double"
+                                        },
+                                        "description": {
+                                            "bsonType": "string"
+                                        },
+                                        "discount": {
+                                            "bsonType": "double"
+                                        },
+                                        "number_of_products": {
+                                            "bsonType": "int",
+                                            "minimum": 0
+                                        },
+                                        "product_name": {
+                                            "bsonType": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        """);
+        try {
+            ValidationOptions validationOptions = new ValidationOptions().validator(validator);
+            CreateCollectionOptions createCollectionOptions = new CreateCollectionOptions().validationOptions(validationOptions);
+            repository.getDatabase().createCollection("products", createCollectionOptions);
+        } catch (MongoCommandException ignored) {
+            Document command = new Document("collMod", "products").append("validator", validator);
+            repository.getDatabase().runCommand(command);
+        }
+
     }
 
     @Override

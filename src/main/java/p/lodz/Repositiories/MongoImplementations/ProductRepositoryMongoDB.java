@@ -5,6 +5,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.Updates;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Model.Product;
@@ -35,16 +36,20 @@ public class ProductRepositoryMongoDB implements ProductRepository {
     @Override
     public Product decrementNumberOfProducts(ObjectId id, int quantity) {
         Product product = mongoCollection.find(Filters.eq("_id", id)).first();
-        if(product != null ) {
-            if (product.getNumberOfProducts() - quantity >= 0){
-                product = mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
-                        Updates.inc("number_of_products", -quantity),
-                        new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
-            } else {
-                throw new InvalidDataException("decrementing would cause negative number of products");
-            }
+        if(product.getNumberOfProducts() -quantity < 0) {
+            throw new RuntimeException("The number of available products is to little");
         }
-        return product;
+        else if(product.getNumberOfProducts() -quantity == 0) {
+            Bson combinedUpdates = Updates.combine(
+                    Updates.set("archived", true),
+                    Updates.inc("number_of_products", -quantity));
+            return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
+                    combinedUpdates,
+                    new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
+        }
+        return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
+                Updates.inc("number_of_products", -quantity),
+                new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
     }
 
     @Override

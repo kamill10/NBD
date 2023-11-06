@@ -21,13 +21,13 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 @ToString
 public class Purchase extends AbstractEntity{
 
-    @BsonProperty("purchasedate")
+    @BsonProperty("purchase_date")
     private LocalDate purchaseDate;
 
-    @BsonProperty("deliverydate")
+    @BsonProperty("delivery_date")
     private LocalDate deliveryDate;
 
-    @BsonProperty("finalcost")
+    @BsonProperty("final_cost")
     private double finalCost;
 
     @BsonProperty("client")
@@ -56,9 +56,9 @@ public class Purchase extends AbstractEntity{
     }
 
     @BsonCreator
-    public Purchase(@BsonProperty("purchasedate") LocalDate purchaseDate,
-                    @BsonProperty("deliverydate") LocalDate deliveryDate,
-                    @BsonProperty("finalcost") double finalCost,
+    public Purchase(@BsonProperty("purchase_date") LocalDate purchaseDate,
+                    @BsonProperty("delivery_date") LocalDate deliveryDate,
+                    @BsonProperty("final_cost") double finalCost,
                     @BsonProperty("client") Client client,
                     @BsonProperty("products") List<ProductEntry> products){
         this.purchaseDate = purchaseDate;

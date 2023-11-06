@@ -23,8 +23,8 @@ public class ClientTypeCodec implements Codec<ClientType> {
     public void encode(BsonWriter writer, ClientType clientType, EncoderContext encoderContext) {
         writer.writeStartDocument();
         writer.writeString("_clazz", clientType.getClass().getSimpleName().toLowerCase());
-        writer.writeDouble("clientdiscount", clientType.getClientDiscount());
-        writer.writeInt32("shorterdeliverytime", clientType.getShorterDeliveryTime());
+        writer.writeDouble("client_discount", clientType.getClientDiscount());
+        writer.writeInt32("shorter_delivery_time", clientType.getShorterDeliveryTime());
         writer.writeEndDocument();
     }
 

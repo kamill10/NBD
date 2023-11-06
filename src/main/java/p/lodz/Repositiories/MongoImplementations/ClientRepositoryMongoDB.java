@@ -16,24 +16,16 @@ import java.util.List;
 
 public class ClientRepositoryMongoDB implements ClientRepository {
 
-    private MongoCollection<Client> clientsCollection;
-    private MongoCollection<ClientType> clientTypeRepository;
-
+    private final MongoCollection<Client> clientsCollection;
 
     public ClientRepositoryMongoDB(MongoCollection<Client> clientsCollection) {
         this.clientsCollection = clientsCollection;
     }
-    public ClientRepositoryMongoDB(MongoCollection<Client> clientsCollection,MongoCollection<ClientType>clientTypes) {
-        this.clientsCollection = clientsCollection;
-        clientTypeRepository = clientTypes;
-    }
+
 
     @Override
     public Client saveClient(Client client) {
         clientsCollection.insertOne(client);
-        if(clientTypeRepository != null) {
-            clientTypeRepository.insertOne(client.getClientType());
-        }
         return client;
     }
 

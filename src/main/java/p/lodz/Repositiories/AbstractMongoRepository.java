@@ -23,12 +23,12 @@ import java.util.List;
 
 @Getter
 public class AbstractMongoRepository implements AutoCloseable {
-    private ConnectionString connectionString = new ConnectionString(
+    private final ConnectionString connectionString = new ConnectionString(
             "mongodb://localhost:27017,localhost:27018,localhost:27019/online-shop?replicaSet=replica_set_single"
     );
-    private MongoCredential credential = MongoCredential.createCredential("admin",
+    private final MongoCredential credential = MongoCredential.createCredential("admin",
             "admin", "adminpassword".toCharArray());
-    private CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
+    private final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
             .automatic(true)
             .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
             .build());
@@ -68,7 +68,7 @@ public class AbstractMongoRepository implements AutoCloseable {
 
     @Override
     public void close() {
-        database.drop();
+//        database.drop();
         mongoClient.close();
     }
 }

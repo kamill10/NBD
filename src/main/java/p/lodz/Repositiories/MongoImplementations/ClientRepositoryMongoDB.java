@@ -1,15 +1,10 @@
 package p.lodz.Repositiories.MongoImplementations;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.checkerframework.checker.units.qual.C;
 import p.lodz.Model.Client;
-import p.lodz.Model.Type.ClientType;
 import p.lodz.Repositiories.ClientRepository;
-import p.lodz.Repositiories.ClientTypeRepository;
 
 import java.util.ArrayList;
 import java.util.List;

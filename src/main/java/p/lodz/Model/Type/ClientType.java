@@ -11,7 +11,6 @@ import org.bson.types.ObjectId;
 @Getter
 @Setter
 @NoArgsConstructor
-@BsonDiscriminator(key = "_clazz")
 public abstract class ClientType {
 
     @BsonProperty("client_discount")

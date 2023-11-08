@@ -27,15 +27,15 @@ public class App {
 
             ProductRepositoryMongoDB testRepo = new ProductRepositoryMongoDB(shop.getRepository().getDatabase().getCollection("products", Product.class));
             Product productTest = shop.getProductManager().registerProduct("NegativeTest", 120, 1, "casf");
-//            try {
-//                testRepo.decrementNumberOfProducts(productTest.getEntityId(), 2);
-//                System.out.println(testRepo.findProductById(productTest.getEntityId()).toString());
-//                System.out.println("Blad zakupu");
-//            }catch (Exception e){
-//                System.out.println("Blad zakup2");
-//                System.out.println(e.toString());
-//                System.out.println(testRepo.findProductById(productTest.getEntityId()));
-//            }
+            try {
+                testRepo.decrementNumberOfProducts(productTest.getEntityId(), 2);
+                System.out.println(testRepo.findProductById(productTest.getEntityId()).toString());
+                System.out.println("Blad zakupu");
+            }catch (Exception e){
+                System.out.println("Blad zakup2");
+                System.out.println(e.toString());
+                System.out.println(testRepo.findProductById(productTest.getEntityId()));
+            }
 
             List<ProductEntry> purchases = new ArrayList<>();
             purchases.add(new ProductEntry(product, 1));
@@ -47,12 +47,12 @@ public class App {
                 e.printStackTrace();
             }
 
-//            shop.getRepository().getDatabase().getCollection("clients").find().forEach(System.out::println);
+            shop.getRepository().getDatabase().getCollection("clients").find().forEach(System.out::println);
 //            System.out.println(client2);
             Client clnt = shop.getRepository().getDatabase().getCollection("clients", Client.class).find(Filters.eq("_id", client2.getEntityId())).first();
 //            System.out.println(clnt);
             shop.getRepository().getDatabase().getCollection("products").find().forEach(System.out::println);
-//            shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
+            shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
 //            System.out.println(clientRepository.findClientById(client2.getEntityId()));
             shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
         } catch (Exception e){

@@ -61,9 +61,6 @@ public class PurchaseRepositoryTest {
     @Order(5)
     void primaryNodeDisabled() {
 
-        Document command = new Document("replSetStepDown", 60);
-//        repository.getMongoClient().getDatabase("admin").runCommand(repository.getClientSession(), command);
-        purchaseDatabase.runCommand(repository.getClientSession(), command);
         assertEquals(purchaseRepository.findAllPurchases().size(), 2);
         List<Purchase> purchases = purchaseRepository.findAllPurchases();
         assertEquals(purchases.size(), 2);

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ProductEntry {
+
     private Product product;
     private int quantity;
 

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Model.Client;
 import p.lodz.Model.Product;
+import p.lodz.Model.Shop;
 import p.lodz.Repositiories.AbstractMongoRepository;
 import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
@@ -20,8 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductRepositoryTest {
     static AbstractMongoRepository repository = new AbstractMongoRepository();
-    static MongoDatabase productDatabase = repository.getDatabase();
-    static ProductRepositoryMongoDB productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products_test", Product.class));
+
+    static Shop shop = new Shop();
+    static MongoDatabase productDatabase = shop.getRepository().getDatabase();
+
+    static ProductRepository productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products", Product.class));
 
 
     @Test
@@ -42,10 +46,8 @@ public class ProductRepositoryTest {
         Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
         Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
         assertEquals(0, productAfterDecrement.getNumberOfProducts());
-
-//        assertThrows(MongoCommandException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1));
+        assertThrows(MongoCommandException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 2));
         assertEquals(0, productRepository.findProductById(savedProduct.getEntityId()).getNumberOfProducts());
-//        assertTrue(productAfterDecrement.isArchived());
 
     }
 

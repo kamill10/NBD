@@ -74,9 +74,7 @@ public class PurchaseManager {
         Purchase purchase = null;
         ClientSession session = repository.getClientSession();
         try(session) {
-            session.startTransaction(TransactionOptions.builder().writeConcern(WriteConcern.MAJORITY)
-                    .readConcern(ReadConcern.MAJORITY)
-                    .build());
+            session.startTransaction();
             Iterator<ProductEntry> iterator = products.iterator();
             while (iterator.hasNext()) {
                 ProductEntry product = iterator.next();

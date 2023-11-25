@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   mongo_1:
     build: .
@@ -70,7 +71,7 @@ services:
       mongo_3:
         condition: service_healthy
     command: >
-      sleep 10 && mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval
+      mongosh --host mongodb1:27017 --username admin --password adminpassword --authenticationDatabase admin --eval
       '
       rs.initiate(
                {
@@ -84,5 +85,19 @@ services:
                }
             );
       '
+  redis-stack:
+    image: redis:latest
+    volumes:
+      - redis-stack-data:/data
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    networks:
+      - redisnet
+
+volumes:
+  redis-stack-data: {}
+
 networks:
   mongonet: {}
+  redisnet: {}

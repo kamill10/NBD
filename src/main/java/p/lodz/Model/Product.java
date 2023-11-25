@@ -54,4 +54,16 @@ public class Product extends AbstractEntity {
         this.numberOfProducts = numberOfProducts;
         this.description = description;
     }
+    public Product(ObjectId id,
+                   String productName,
+                   double baseCost,
+                   int numberOfProducts,
+                   String description) {
+        super(id);
+        this.productName = productName;
+        this.baseCost = baseCost;
+        this.numberOfProducts = numberOfProducts;
+        this.description = description;
+    }
+    public Product(){}
 }

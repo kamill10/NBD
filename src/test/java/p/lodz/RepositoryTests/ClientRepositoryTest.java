@@ -1,6 +1,7 @@
 package p.lodz.RepositoryTests;
 
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import p.lodz.Model.Address;

@@ -2,11 +2,13 @@ package p.lodz;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.model.Filters;
+import org.bson.types.ObjectId;
 import p.lodz.Model.*;
 import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
 import p.lodz.Model.Type.PremiumDeluxe;
 import p.lodz.Model.Type.Standard;
+import p.lodz.Redis.RedisCache;
 import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 
 import java.util.ArrayList;
@@ -14,6 +16,10 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
+        RedisCache cache = new RedisCache();
+        ObjectId id = ObjectId.get();
+        cache.saveProduct(new Product(id,"test",2,3,"test"));
+
         try(Shop shop = new Shop()) {
             Product product = shop.getProductManager().registerProduct("bbb", 10, 1, "aabb");
             Product product1 = shop.getProductManager().registerProduct("test", 120, 3, "casf");

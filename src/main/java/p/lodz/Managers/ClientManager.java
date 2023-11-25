@@ -12,11 +12,9 @@ import java.util.List;
 
 public class ClientManager {
     private final ClientRepository clientRepository;
-//    private final ClientTypeRepository clientTypeRepository;
 
     public ClientManager(MongoCollection<Client> collection) {
         this.clientRepository = new ClientRepositoryMongoDB(collection);
-//        this.clientTypeRepository = new ClientTypeRepositoryImpl(em);
     }
 
     public Client getClient(ObjectId id){

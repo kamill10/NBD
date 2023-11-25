@@ -34,7 +34,6 @@ public class RedisCache {
             if (product != null) {
                 return jsonb.fromJson(product, Product.class);
             } else {
-                // Throw an exception when no product is found
                 throw new ExceptionRedis("No product found for id: " + id.toString());
             }
         }
@@ -47,7 +46,6 @@ public class RedisCache {
         try(Jedis jedis = new Jedis()){
             Set<String> productKeys = jedis.keys("product:*");
             if (productKeys.isEmpty()) {
-                // Throw an exception when the list is empty
                 throw new ExceptionRedis("No products found in Redis.");
             }
             for(String key:productKeys){
@@ -79,15 +77,6 @@ public class RedisCache {
             jedis.flushAll();
         } catch (JedisException e) {
             throw new ExceptionRedis("Error while clearing cache in Redis.");
-        }
-    }
-
-    public void clearOne(ObjectId id) throws ExceptionRedis {
-        try (Jedis jedis = pool.getResource()) {
-            String cacheKey = "product:" + id;
-            jedis.del(cacheKey);
-        } catch (JedisException e) {
-            throw new ExceptionRedis("Error while clearing cache for room in Redis.");
         }
     }
 }

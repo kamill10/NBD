@@ -20,7 +20,7 @@ public class RedisConfig {
         Properties prop = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("redis.properties")) {
             if (input == null) {
-                System.out.println("Brak pliku konfiguracyjnego.");
+                System.out.println("Error with configuration file");
                 return null;
             }
             prop.load(input);

@@ -7,8 +7,10 @@ import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.Updates;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import p.lodz.Exceptions.ExceptionRedis;
 import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Model.Product;
+import p.lodz.Redis.RedisProductCache;
 import p.lodz.Repositiories.ProductRepository;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class ProductRepositoryMongoDB implements ProductRepository {
     private final MongoCollection<Product> mongoCollection;
+    private RedisProductCache productCache = new RedisProductCache();
     public ProductRepositoryMongoDB(MongoCollection<Product> mongoCollection) {
         this.mongoCollection = mongoCollection;
     }
@@ -28,6 +31,7 @@ public class ProductRepositoryMongoDB implements ProductRepository {
 
     @Override
     public Product archiveProduct(ObjectId id, boolean value) {
+        productCache.archiveProduct(id);
         return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
                 Updates.set("archived", value),
                 new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
@@ -35,6 +39,7 @@ public class ProductRepositoryMongoDB implements ProductRepository {
 
     @Override
     public Product decrementNumberOfProducts(ObjectId id, int quantity) {
+            productCache.decrementProduct(id,quantity);
         return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
                 Updates.inc("number_of_products", -quantity),
                 new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));

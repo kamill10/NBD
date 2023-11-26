@@ -3,7 +3,7 @@ package p.lodz.Redis;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import org.bson.types.ObjectId;
-import p.lodz.Exceptions.ExceptionRedis;
+import p.lodz.Exceptions.RedisException;
 import p.lodz.Exceptions.ProductException;
 import p.lodz.Model.Product;
 import redis.clients.jedis.Jedis;
@@ -23,7 +23,7 @@ public class RedisProductCache {
             String cacheKey = "product:"+ product.getEntityId();
             jedis.setex(cacheKey,100,productJson);
         }  catch (JedisException e) {
-            throw new ExceptionRedis("Error while saving   product in Redis.");
+            throw new RedisException("Error while saving   product in Redis.");
         }
     }
     public void updateListOfProduct(List<Product>products){
@@ -34,7 +34,7 @@ public class RedisProductCache {
                 jedis.setex(cacheKey, 100, productJson);
             }
         } catch (JedisException e) {
-            throw new ExceptionRedis("Error while updating list of products in Redis.");
+            throw new RedisException("Error while updating list of products in Redis.");
         }
     }
     public void archiveProduct(ObjectId id){
@@ -51,7 +51,7 @@ public class RedisProductCache {
             }
         }
         catch (JedisException e) {
-            throw new ExceptionRedis("Error while archiving  product in Redis.");
+            throw new RedisException("Error while archiving  product in Redis.");
         }
     }
     public void decrementProduct(ObjectId id,int qantity){
@@ -59,7 +59,7 @@ public class RedisProductCache {
             String key = "product:"+id;
             if(jedis.exists(key)){
                 Product product = jsonb.fromJson(jedis.get(key),Product.class);
-                product.setNumberOfProducts(qantity);
+                product.setNumberOfProducts(product.getNumberOfProducts()-qantity);
                 String  updatedProduct = jsonb.toJson(product);
                 jedis.set(key,updatedProduct);
             }
@@ -68,7 +68,7 @@ public class RedisProductCache {
             }
         }
         catch (JedisException e) {
-            throw new ExceptionRedis("Error while decrement number of   product in Redis.");
+            throw new RedisException("Error while decrement number of   product in Redis.");
         }
     }
     public Product getProductData(ObjectId id){
@@ -82,7 +82,7 @@ public class RedisProductCache {
             }
         }
         catch (JedisException e) {
-            throw new ExceptionRedis("Error while geting product in Redis.");
+            throw new RedisException("Error while geting product in Redis.");
         }
     }
     public List<Product>getProducts(){
@@ -90,7 +90,7 @@ public class RedisProductCache {
         try(Jedis jedis = new Jedis()){
             Set<String> productKeys = jedis.keys("product:*");
             if (productKeys.isEmpty()) {
-                throw new ExceptionRedis("No products found in Redis.");
+                return products;
             }
             for(String key:productKeys){
                 String productJson = jedis.get(key);
@@ -98,7 +98,7 @@ public class RedisProductCache {
             }
         }
         catch (JedisException e) {
-            throw new ExceptionRedis("Error while geting list of  products in Redis.");
+            throw new RedisException("Error while geting list of  products in Redis.");
         }
         return products;
     }
@@ -106,21 +106,24 @@ public class RedisProductCache {
         try(Jedis jedis = pool.getResource()){
             String cacheKey = "product:"+id;
             if(jedis.get(cacheKey) == null) {
-                throw new ExceptionRedis("No product found for id: " + id.toString());
+                throw new ProductException("No product found for id: " + id.toString());
             }
             else{
                 jedis.del(cacheKey);
             }
         }
         catch (JedisException e) {
-            throw new ExceptionRedis("Error while deleting product in Redis.");
+            throw new RedisException("Error while deleting product in Redis.");
         }
     }
-    public void clearCache() throws ExceptionRedis {
+    public void clearCache() throws RedisException {
         try (Jedis jedis = pool.getResource()) {
             jedis.flushAll();
         } catch (JedisException e) {
-            throw new ExceptionRedis("Error while clearing cache in Redis.");
+            throw new RedisException("Error while clearing cache in Redis.");
         }
+    }
+    public void close(){
+        pool.close();
     }
 }

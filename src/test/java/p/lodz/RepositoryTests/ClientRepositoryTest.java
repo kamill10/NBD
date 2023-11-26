@@ -21,7 +21,6 @@ public class ClientRepositoryTest {
     static MongoDatabase mongoDatabase = repository.getDatabase();
     static ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients_test", Client.class));
 
-    // Initialize test clients
     Client testClient1 = new Client(
             "Robert", "Lewandowski", new Address("Lodz1", "przykladow2a", "44A"), new Standard());
     Client testClient2 = new Client(

@@ -2,8 +2,9 @@ package p.lodz.Managers;
 
 
 import com.mongodb.client.MongoCollection;
+import lombok.Getter;
 import org.bson.types.ObjectId;
-import p.lodz.Exceptions.ExceptionRedis;
+import p.lodz.Exceptions.RedisException;
 import p.lodz.Exceptions.ProductException;
 import p.lodz.Model.Product;
 import p.lodz.Redis.RedisProductCache;
@@ -12,9 +13,10 @@ import p.lodz.Repositiories.ProductRepository;
 
 import java.util.List;
 
+@Getter
 public class ProductManager {
     private final ProductRepository productRepository;
-    private RedisProductCache productCache = new RedisProductCache();
+    private final RedisProductCache productCache = new RedisProductCache();
 
     public ProductManager(MongoCollection<Product> collection) {
         this.productRepository = new ProductRepositoryMongoDB(collection);
@@ -23,7 +25,7 @@ public class ProductManager {
     public Product getProduct(ObjectId id) {
         try {
             return productCache.getProductData(id);
-        } catch (ExceptionRedis e) {
+        } catch (RedisException e) {
             return productRepository.findProductById(id);
         } catch (ProductException e) {
             if (productRepository.findProductById(id) == null) {
@@ -44,7 +46,7 @@ public class ProductManager {
         Product savedProduct = productRepository.saveProduct(product);
         try {
             productCache.saveProduct(savedProduct);
-        } catch (ExceptionRedis e) {
+        } catch (RedisException e) {
             return savedProduct;
         }
         return savedProduct;
@@ -57,7 +59,7 @@ public class ProductManager {
             try{
                 return productCache.getProducts();
             }
-            catch (ExceptionRedis e){
+            catch (RedisException e){
                 return productRepository.findAllProducts();
             }
         }
@@ -72,10 +74,9 @@ public class ProductManager {
         try{
             productCache.deleteProduct(id);
         }
-        catch(ExceptionRedis e){
+        catch(RedisException e){
             return productRepository.deleteProduct(id);
         }
-        productCache.deleteProduct(id);
         return productRepository.deleteProduct(id);
     }
 

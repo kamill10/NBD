@@ -2,8 +2,8 @@ package p.lodz.Exceptions;
 
 import redis.clients.jedis.exceptions.JedisException;
 
-public class ExceptionRedis extends JedisException {
-    public ExceptionRedis(String msg) {
+public class RedisException extends JedisException {
+    public RedisException(String msg) {
         super(msg);
     }
 }

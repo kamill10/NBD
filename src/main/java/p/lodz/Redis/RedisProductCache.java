@@ -21,7 +21,7 @@ public class RedisProductCache {
         try (Jedis jedis = pool.getResource()) {
             String productJson = jsonb.toJson(product);
             String cacheKey = "product:"+ product.getEntityId();
-            jedis.setex(cacheKey,100,productJson);
+            jedis.setex(cacheKey,3600,productJson);
         }  catch (JedisException e) {
             throw new RedisException("Error while saving   product in Redis.");
         }
@@ -31,7 +31,7 @@ public class RedisProductCache {
             for (Product product : products) {
                 String cacheKey = "product:" + product.getEntityId();
                 String productJson = jsonb.toJson(product);
-                jedis.setex(cacheKey, 100, productJson);
+                jedis.setex(cacheKey, 1000, productJson);
             }
         } catch (JedisException e) {
             throw new RedisException("Error while updating list of products in Redis.");

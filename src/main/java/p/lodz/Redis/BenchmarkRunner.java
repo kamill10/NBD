@@ -14,7 +14,7 @@ public class BenchmarkRunner {
     private boolean cacheClosed = false;
     @Setup
     public void setup() {
-        for(int i =0;i < 20;i++){
+        for(int i =0;i < 100;i++){
             manager.registerProduct("redis_performance_test"+i, 50, 2, "benchmark");
         }
     }
@@ -25,7 +25,7 @@ public class BenchmarkRunner {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void readFromCache() {
-        manager.getAllProducts();
+        manager.getProductCache().getProducts();
     }
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
@@ -37,8 +37,10 @@ public class BenchmarkRunner {
         }
         manager.getAllProducts();
     }
-
-
+   @TearDown
+   public void cleanup() {
+       shop.close();
+   }
 
 
     public static void main(String[] args) throws Exception {

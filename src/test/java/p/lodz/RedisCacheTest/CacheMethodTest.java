@@ -95,9 +95,10 @@ public class CacheMethodTest {
         Product productToDelete = manager.registerProduct("product_to_delete", 50, 2, "redis_test_delete");
         manager.deleteProduct(productToDelete.getEntityId());
 
-        assertThrows(ProductException.class, () -> manager.getProductCache().getProductData(productToDelete.getEntityId()),
-                "Expected getProductCache().getProductData() to throw ProductException after deletion");
-
+        ProductException exception = assertThrows(ProductException.class, () -> {
+            manager.getProductCache().getProductData(productToDelete.getEntityId());
+        });
+        assertEquals("No product found for id: " + productToDelete.getEntityId().toString(), exception.getMessage());
     }
     @Order(8)
     @Test

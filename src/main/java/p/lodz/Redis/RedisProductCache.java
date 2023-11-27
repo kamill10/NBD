@@ -82,26 +82,24 @@ public class RedisProductCache {
             }
         }
         catch (JedisException e) {
-            throw new RedisException("Error while geting product in Redis.");
+            throw new RedisException("Error while geting product in Redis."+e);
         }
     }
     public List<Product>getProducts(){
-        List<Product>products = new ArrayList<>();
-        try(Jedis jedis = new Jedis()){
-            Set<String> productKeys = jedis.keys("product:*");
-            if (productKeys.isEmpty()) {
-                return products;
+            List<Product> products = new ArrayList<>();
+            try (Jedis jedis = pool.getResource()) {
+                Set<String> productKeys = jedis.keys("product:*");
+                if (!productKeys.isEmpty()) {
+                    for (String key : productKeys) {
+                        String productJson = jedis.get(key);
+                        products.add(jsonb.fromJson(productJson, Product.class));
+                    }
+                }
+            } catch (JedisException e) {
+                throw new RedisException("Error while getting list of products in Redis." +e);
             }
-            for(String key:productKeys){
-                String productJson = jedis.get(key);
-                products.add(jsonb.fromJson(productJson,Product.class));
-            }
+            return products;
         }
-        catch (JedisException e) {
-            throw new RedisException("Error while geting list of  products in Redis.");
-        }
-        return products;
-    }
     public void deleteProduct(ObjectId id){
         try(Jedis jedis = pool.getResource()){
             String cacheKey = "product:"+id;
@@ -120,10 +118,11 @@ public class RedisProductCache {
         try (Jedis jedis = pool.getResource()) {
             jedis.flushAll();
         } catch (JedisException e) {
-            throw new RedisException("Error while clearing cache in Redis.");
+            throw new RedisException("Error while clearing cache in Redis."+e.getMessage());
         }
     }
     public void close(){
+        clearCache();
         pool.close();
     }
 }

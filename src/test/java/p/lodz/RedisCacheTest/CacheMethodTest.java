@@ -27,9 +27,7 @@ public class CacheMethodTest {
     @Test
     public void addToCacheTest(){
         Product product = manager.registerProduct("testowy,",20,10,"reedis_test");
-        System.out.println("xdd+"+product.getEntityId());
-        System.out.println("xdd+"+manager.getProductCache().getProductData(product.getEntityId()).getEntityId());
-        assertEquals(manager.getProductCache().getProducts().size(),1);
+        assertEquals(manager.getProductCache().getProducts().size(),manager.getAllProducts().size());
         assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getNumberOfProducts(),product.getNumberOfProducts());
         assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getProductName(),product.getProductName());
         assertEquals(manager.getProductCache().getProductData(product.getEntityId()).isArchived(),product.isArchived());
@@ -46,8 +44,15 @@ public class CacheMethodTest {
         assertEquals(cachedProduct.getNumberOfProducts(), product.getNumberOfProducts());
         assertEquals(cachedProduct.getDescription(), product.getDescription());
     }
-
     @Order(3)
+    @Test
+    public void archiveProduct(){
+        Product product = manager.registerProduct("test_product", 30, 5, "redis_test_get");
+        repo.archiveProduct(product.getEntityId(),true);
+        assertTrue(manager.getProductCache().getProductData(product.getEntityId()).isArchived());
+    }
+
+    @Order(4)
     @Test
     public void getAllProductsTest() {
         Product product = manager.registerProduct("test_product_2", 40, 3, "redis_test_all");
@@ -61,7 +66,7 @@ public class CacheMethodTest {
             assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getDescription(), product.getDescription());
 
     }
-    @Order(4)
+    @Order(5)
     @Test
     public void clearCacheAndUpdateCache(){
         Product product = manager.registerProduct("test_product_2", 40, 3, "redis_test_all");
@@ -69,13 +74,13 @@ public class CacheMethodTest {
         manager.getProductCache().clearCache();
         //cache nie posiada zadnych produktow
         assertEquals(manager.getProductCache().getProducts().size(),0);
-        //symulacja przy pobieraniu produktor cache ma inna zawartosc niz baza danych/wykoany zostanie clear cache
+        //symulacja przy pobieraniu produktor cache ma inna zawartosc niz baza danych/wykoany zostanie clar i  update cache
         manager.getAllProducts();
         assertEquals(manager.getProductCache().getProducts().size(),sizeBeforeClear);
         assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getProductName(),product.getProductName());
         //update cacha do stanu bazy
     }
-    @Order(5)
+    @Order(6)
     @Test
     public void decrementNumberOfProductTest(){
         Product product = manager.registerProduct("test_product_2", 40, 3, "redis_test_all");
@@ -84,7 +89,7 @@ public class CacheMethodTest {
 
     }
 
-    @Order(6)
+    @Order(7)
     @Test
     public void deleteProductTest() {
         Product productToDelete = manager.registerProduct("product_to_delete", 50, 2, "redis_test_delete");
@@ -94,11 +99,10 @@ public class CacheMethodTest {
                 "Expected getProductCache().getProductData() to throw ProductException after deletion");
 
     }
-    @Order(7)
+    @Order(8)
     @Test
     public void loseConnectionWithRedis(){
         Product product = manager.registerProduct("redis_lost_connection", 50, 2, "redis_test_delete");
-        manager.getProductCache().clearCache();
         manager.getProductCache().close();
         assertEquals(manager.getProduct(product.getEntityId()).getProductName(), product.getProductName());
         assertEquals(manager.getProduct(product.getEntityId()).getDescription(), product.getDescription());

@@ -23,15 +23,16 @@ public class ProductManager {
     }
 
     public Product getProduct(ObjectId id) {
+        Product product;
         try {
-            return productCache.getProductData(id);
+            product = productCache.getProductData(id);
         } catch (RedisException e) {
             return productRepository.findProductById(id);
         } catch (ProductException e) {
             if (productRepository.findProductById(id) == null) {
                 throw new ProductException("No product with id in database");
             } else {
-                Product product = productRepository.findProductById(id);
+                 product = productRepository.findProductById(id);
                 productCache.saveProduct(new Product(id, productRepository.findProductById(id).getProductName(),
                         productRepository.findProductById(id).getBaseCost(),
                         productRepository.findProductById(id).getNumberOfProducts(),
@@ -39,6 +40,7 @@ public class ProductManager {
                 return product;
             }
         }
+        return product;
     }
 
     public Product registerProduct(String productName, double baseCost, int numberOfProducts, String description) {
@@ -55,19 +57,19 @@ public class ProductManager {
 
     public List<Product> getAllProducts() {
         List<Product>products;
-        if(productRepository.findAllProducts().size() == productCache.getProducts().size()){
-            try{
-                return productCache.getProducts();
+        try {
+            productCache.getProducts();
+            if (productRepository.findAllProducts().size() == productCache.getProducts().size()) {
+                products =  productCache.getProducts();
+            } else {
+                productCache.clearCache();
+                productCache.updateListOfProduct(productRepository.findAllProducts());
+                products =  productCache.getProducts();
             }
-            catch (RedisException e){
-                return productRepository.findAllProducts();
-            }
+        } catch (RedisException e) {
+            return productRepository.findAllProducts();
         }
-        else{
-             productCache.clearCache();
-             productCache.updateListOfProduct(productRepository.findAllProducts());
-        }
-        return productCache.getProducts();
+        return products;
     }
 
     public boolean deleteProduct(ObjectId id ){

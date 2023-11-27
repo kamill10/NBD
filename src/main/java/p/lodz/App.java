@@ -18,9 +18,7 @@ public class App {
     public static void main(String[] args) {
         RedisProductCache cache = new RedisProductCache();
         ObjectId id = ObjectId.get();
-        cache.saveProduct(new Product(id,"test",2,3,"test"));
-        cache.archiveProduct(id);
-
+        //cache.saveProduct(new Product(id,"test",2,3,"test"));
         try(Shop shop = new Shop()) {
             Product product = shop.getProductManager().registerProduct("bbb", 10, 1, "aabb");
             Product product1 = shop.getProductManager().registerProduct("test", 120, 3, "casf");
@@ -62,6 +60,7 @@ public class App {
             shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
 //            System.out.println(clientRepository.findClientById(client2.getEntityId()));
             shop.getRepository().getDatabase().getCollection("purchases").find().forEach(System.out::println);
+            shop.getProductManager().getProductCache().close();
         } catch (Exception e){
             e.printStackTrace();
         }

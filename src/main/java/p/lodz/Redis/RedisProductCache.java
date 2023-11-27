@@ -11,8 +11,10 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.exceptions.JedisException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RedisProductCache {
     JedisPool pool = new RedisConfig().getJedisPool();
@@ -86,19 +88,21 @@ public class RedisProductCache {
         }
     }
     public List<Product>getProducts(){
-            List<Product> products = new ArrayList<>();
-            try (Jedis jedis = pool.getResource()) {
-                Set<String> productKeys = jedis.keys("product:*");
-                if (!productKeys.isEmpty()) {
-                    for (String key : productKeys) {
-                        String productJson = jedis.get(key);
-                        products.add(jsonb.fromJson(productJson, Product.class));
-                    }
-                }
-            } catch (JedisException e) {
-                throw new RedisException("Error while getting list of products in Redis." +e);
+        try (Jedis jedis = pool.getResource()) {
+            Set<String> productKeys = jedis.keys("product:*");
+
+            if (!productKeys.isEmpty()) {
+                List<String> productJsonList = jedis.mget(productKeys.toArray(new String[0]));
+
+                return productJsonList.stream()
+                        .map(json -> jsonb.fromJson(json, Product.class))
+                        .collect(Collectors.toList());
             }
-            return products;
+        } catch (JedisException e) {
+            throw new RedisException("Error while getting list of products in Redis." + e);
+        }
+
+        return Collections.emptyList();
         }
     public void deleteProduct(ObjectId id){
         try(Jedis jedis = pool.getResource()){

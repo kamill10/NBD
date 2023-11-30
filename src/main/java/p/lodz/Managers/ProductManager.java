@@ -29,15 +29,15 @@ public class ProductManager {
         } catch (RedisException e) {
             return productRepository.findProductById(id);
         } catch (ProductException e) {
-            if (productRepository.findProductById(id) == null) {
+            Product repositoryProduct = productRepository.findProductById(id);
+            if (repositoryProduct == null) {
                 throw new ProductException("No product with id in database");
             } else {
-                 product = productRepository.findProductById(id);
-                productCache.saveProduct(new Product(id, productRepository.findProductById(id).getProductName(),
-                        productRepository.findProductById(id).getBaseCost(),
-                        productRepository.findProductById(id).getNumberOfProducts(),
-                        productRepository.findProductById(id).getDescription()));
-                return product;
+                productCache.saveProduct(new Product(id, repositoryProduct.getProductName(),
+                        repositoryProduct.getBaseCost(),
+                        repositoryProduct.getNumberOfProducts(),
+                        repositoryProduct.getDescription()));
+                return repositoryProduct;
             }
         }
         return product;

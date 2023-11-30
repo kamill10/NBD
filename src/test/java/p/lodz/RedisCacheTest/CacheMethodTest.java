@@ -37,12 +37,10 @@ public class CacheMethodTest {
     @Test
     public void getProductFromCacheTest() {
         Product product = manager.registerProduct("test_product", 30, 5, "redis_test_get");
-        Product cachedProduct = manager.getProduct(product.getEntityId());
-
-        assertEquals(cachedProduct.getProductName(), product.getProductName());
-        assertEquals(cachedProduct.getBaseCost(), product.getBaseCost());
-        assertEquals(cachedProduct.getNumberOfProducts(), product.getNumberOfProducts());
-        assertEquals(cachedProduct.getDescription(), product.getDescription());
+        assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getProductName(), product.getProductName());
+        assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getBaseCost(), product.getBaseCost());
+        assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getNumberOfProducts(), product.getNumberOfProducts());
+        assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getDescription(), product.getDescription());
     }
     @Order(3)
     @Test
@@ -74,7 +72,7 @@ public class CacheMethodTest {
         manager.getProductCache().clearCache();
         //cache nie posiada zadnych produktow
         assertEquals(manager.getProductCache().getProducts().size(),0);
-        //symulacja przy pobieraniu produktor cache ma inna zawartosc niz baza danych/wykoany zostanie clar i  update cache
+        //symulacja przy pobieraniu produktor cache ma inna zawartosc niz baza danych/wykoany zostanie   update cache
         manager.getAllProducts();
         assertEquals(manager.getProductCache().getProducts().size(),sizeBeforeClear);
         assertEquals(manager.getProductCache().getProductData(product.getEntityId()).getProductName(),product.getProductName());

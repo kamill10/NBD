@@ -19,7 +19,7 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 @Setter
 @NoArgsConstructor
 @ToString
-public class Purchase extends AbstractEntity{
+public class Purchase {
 
     @BsonProperty("purchase_date")
     private LocalDate purchaseDate;
@@ -37,7 +37,6 @@ public class Purchase extends AbstractEntity{
     private List<ProductEntry> products;
 
     public Purchase(Client client, List<ProductEntry> products) {
-        super(new ObjectId());
         this.client = client;
         this.products = products;
         purchaseDate = LocalDate.now();
@@ -46,7 +45,6 @@ public class Purchase extends AbstractEntity{
         client.addMoneySpent(finalCost);
     }
     public Purchase(Client client, ProductEntry product) {
-        super(new ObjectId());
         this.client = client;
         this.products = new ArrayList<>(Arrays.asList(product));
         purchaseDate = LocalDate.now();

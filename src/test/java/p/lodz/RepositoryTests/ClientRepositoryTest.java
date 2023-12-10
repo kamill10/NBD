@@ -7,18 +7,16 @@ import p.lodz.Model.Address;
 import p.lodz.Model.Client;
 import p.lodz.Model.Type.Premium;
 import p.lodz.Model.Type.Standard;
-import p.lodz.Repositiories.AbstractMongoRepository;
-import p.lodz.Repositiories.ClientRepository;
-import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
+import p.lodz.Repositiories.CassandraImplementations.ClientRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClientRepositoryTest {
-
+/*
     static AbstractMongoRepository repository = new AbstractMongoRepository();
     static MongoDatabase mongoDatabase = repository.getDatabase();
-    static ClientRepository clientRepository = new ClientRepositoryMongoDB(mongoDatabase.getCollection("clients_test", Client.class));
+    static p.lodz.Repositiories.ClientRepository clientRepository = new ClientRepository(mongoDatabase.getCollection("clients_test", Client.class));
 
     // Initialize test clients
     Client testClient1 = new Client(
@@ -56,5 +54,5 @@ public class ClientRepositoryTest {
         //mongoDatabase.runCommand(command);
         assertEquals(clientRepository.findAllClients().size(), 2);
         mongoDatabase.getCollection("clients_test").drop();
-    }
+    } */
 }

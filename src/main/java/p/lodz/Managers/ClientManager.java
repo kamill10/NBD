@@ -1,22 +1,20 @@
 package p.lodz.Managers;
 
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.mongodb.client.MongoCollection;
 import org.bson.types.ObjectId;
 import p.lodz.Model.Address;
 import p.lodz.Model.Client;
 import p.lodz.Model.Type.ClientType;
-import p.lodz.Repositiories.ClientRepository;
-import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
+import p.lodz.Repositiories.CassandraImplementations.ClientRepository;
 
 import java.util.List;
 
 public class ClientManager {
-    private final ClientRepository clientRepository;
-//    private final ClientTypeRepository clientTypeRepository;
+    private final p.lodz.Repositiories.ClientRepository clientRepository;
 
-    public ClientManager(MongoCollection<Client> collection) {
-        this.clientRepository = new ClientRepositoryMongoDB(collection);
-//        this.clientTypeRepository = new ClientTypeRepositoryImpl(em);
+    public ClientManager(CqlSession session) {
+        this.clientRepository = new ClientRepository(session);
     }
 
     public Client getClient(ObjectId id){

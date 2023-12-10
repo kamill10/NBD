@@ -1,32 +1,15 @@
 package p.lodz.Managers;
 
-import com.mongodb.*;
-import com.mongodb.client.ClientSession;
-import com.mongodb.client.MongoCollection;
-import jakarta.persistence.LockModeType;
-import org.bson.types.ObjectId;
-import p.lodz.Exceptions.InvalidDataException;
-import p.lodz.Exceptions.InvalidPurchaseException;
-import p.lodz.Model.*;
-import p.lodz.Repositiories.AbstractMongoRepository;
-import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
-import p.lodz.Repositiories.MongoImplementations.PurchaseRepositoryMongoDB;
-import p.lodz.Repositiories.ProductRepository;
-import p.lodz.Repositiories.PurchaseRepository;
-
-import java.util.Iterator;
-import java.util.List;
-
 public class PurchaseManager {
-    private final PurchaseRepository purchaseRepository;
-    private final ProductRepository productRepository;
+    /*private final p.lodz.Repositiories.PurchaseRepository purchaseRepository;
+    private final p.lodz.Repositiories.ProductRepository productRepository;
 
     private final AbstractMongoRepository repository;
 
     public PurchaseManager(MongoCollection<Purchase> purchaseCollection,
                            MongoCollection<Product> productCollection, AbstractMongoRepository repository) {
-        this.purchaseRepository = new PurchaseRepositoryMongoDB(purchaseCollection);
-        this.productRepository = new ProductRepositoryMongoDB(productCollection);
+        this.purchaseRepository = new PurchaseRepository(purchaseCollection);
+        this.productRepository = new ProductRepository(productCollection);
         this.repository = repository;
     }
 
@@ -116,5 +99,5 @@ public class PurchaseManager {
 
     public List<Purchase> getAllClientPurchases(Client client) {
         return purchaseRepository.findAllClientPurchases(client);
-    }
+    } */
 }

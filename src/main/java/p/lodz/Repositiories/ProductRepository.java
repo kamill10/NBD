@@ -4,12 +4,15 @@ import org.bson.types.ObjectId;
 import p.lodz.Model.Product;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductRepository {
     Product saveProduct(Product product);
-    Product archiveProduct(ObjectId id, boolean value);
-    Product decrementNumberOfProducts(ObjectId id, int quantity);
-    Product findProductById(ObjectId id);
+    void update(Product product);
+    Product findProductById(UUID id);
     List<Product> findAllProducts();
-    boolean deleteProduct(ObjectId id);
+    boolean deleteProduct(Product product);
+
+    boolean archiveProduct(Product product , UUID id , boolean archived);
+    boolean decrementProducts(Product product , UUID id , int numberOfProducts);
 }

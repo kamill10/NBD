@@ -1,13 +1,10 @@
 package p.lodz;
 
-import com.mongodb.client.MongoDatabase;
 import org.junit.jupiter.api.Test;
 import p.lodz.Model.Address;
 import p.lodz.Model.Client;
 import p.lodz.Model.Type.ClientType;
 import p.lodz.Model.Type.Premium;
-import p.lodz.Repositiories.AbstractMongoRepository;
-import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 
 import static org.junit.jupiter.api.Assertions.*;
 

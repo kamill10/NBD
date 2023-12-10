@@ -2,7 +2,9 @@ package p.lodz.Repositiories;
 
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
+import com.datastax.oss.driver.api.querybuilder.schema.CreateKeyspace;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +12,10 @@ import java.net.InetSocketAddress;
 
 @Getter
 @Setter
-public class CassandraConfig {
+public class CassandraConfig implements AutoCloseable {
+
     private static CqlSession session;
-    CassandraConfig(){
+    public CassandraConfig(){
         initSession();
     }
     public void initSession(){
@@ -21,11 +24,21 @@ public class CassandraConfig {
                   .addContactPoint(new InetSocketAddress("cassandara2",9043))
                   .withLocalDatacenter("dc1")
                   .withAuthCredentials("cassandra","cassandrapassword")
+                  .withKeyspace(CqlIdentifier.fromCql("shop"))
                    .build();
-        session.execute(SchemaBuilder.createKeyspace(CqlIdentifier.fromCql("shop"))
+        CreateKeyspace keyspace =  SchemaBuilder.createKeyspace(CqlIdentifier.fromCql("shop"))
                 .ifNotExists()
                 .withSimpleStrategy(2)
-                .build());
+                .withDurableWrites(true);
+        SimpleStatement createKeySpaceStatment = keyspace.build();session.execute(createKeySpaceStatment);
+
+    }
+    public CqlSession getSession(){
+        return session;
+    }
+
+    @Override
+    public void close() throws Exception {
         session.close();
     }
 }

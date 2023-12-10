@@ -1,31 +1,15 @@
 package p.lodz.RepositoryTests;
 
-import com.mongodb.MongoCommandException;
-import com.mongodb.client.MongoDatabase;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.*;
-import p.lodz.Exceptions.InvalidDataException;
-import p.lodz.Model.Client;
-import p.lodz.Model.Product;
-import p.lodz.Model.Shop;
-import p.lodz.Repositiories.AbstractMongoRepository;
-import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
-import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
-import p.lodz.Repositiories.ProductRepository;
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProductRepositoryTest {
-    static AbstractMongoRepository repository = new AbstractMongoRepository();
+   /* static AbstractMongoRepository repository = new AbstractMongoRepository();
 
     static Shop shop = new Shop();
     static MongoDatabase productDatabase = shop.getRepository().getDatabase();
 
-    static ProductRepository productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products", Product.class));
+    static p.lodz.Repositiories.ProductRepository productRepository = new ProductRepository(productDatabase.getCollection("products", Product.class));
 
 
     @Test
@@ -89,7 +73,7 @@ public class ProductRepositoryTest {
         shop.close();
 //        repository.close();
 
-    }
+    } */
 
 
 

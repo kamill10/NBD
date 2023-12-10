@@ -1,18 +1,10 @@
 package p.lodz.Model;
 
-import com.mongodb.client.model.CreateCollectionOptions;
-import com.mongodb.client.model.ValidationOptions;
-import com.mongodb.MongoCommandException;
 import lombok.Getter;
-import org.bson.Document;
-import p.lodz.Managers.ClientManager;
-import p.lodz.Managers.ProductManager;
-import p.lodz.Managers.PurchaseManager;
-import p.lodz.Repositiories.AbstractMongoRepository;
 
 @Getter
 public class Shop implements AutoCloseable{
-    private final ClientManager clientManager;
+   /* private final ClientManager clientManager;
     private final ProductManager productManager;
     private final PurchaseManager purchaseManager;
     private final AbstractMongoRepository repository;
@@ -103,10 +95,10 @@ public class Shop implements AutoCloseable{
             repository.getDatabase().runCommand(command);
         }
 
-    }
+    }*/
 
     @Override
     public void close() {
-        repository.close();
+
     }
 }

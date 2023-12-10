@@ -16,8 +16,8 @@ public class CassandraAddressTranslator implements AddressTranslator {
         String hostAddress = address.getAddress().getHostAddress();
         String hostName = address.getHostName();
         return switch(hostAddress) {
-            case "172.24.0.2" -> new InetSocketAddress("cassandra1",9042);
-            case "172.24.0.3" -> new InetSocketAddress("cassandra2",9043);
+            case "172.24.0.101" -> new InetSocketAddress("cassandra1",9042);
+            case "172.24.0.102" -> new InetSocketAddress("cassandra2",9043);
             default -> throw new IllegalStateException("Unexpected value: " + hostAddress);
         };
     }

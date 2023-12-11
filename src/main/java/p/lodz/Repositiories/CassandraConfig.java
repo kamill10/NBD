@@ -24,9 +24,16 @@ public class CassandraConfig implements AutoCloseable {
                 .addContactPoint(new InetSocketAddress("cassandra2", 9043))
                 .withAuthCredentials("cassandra", "cassandra")
                 .withLocalDatacenter("dc1")
+                //za pierwszy razem zakomentowac
                 .withKeyspace(CqlIdentifier.fromCql("shop"))
                 .build();
 
+        CreateKeyspace keyspace =  SchemaBuilder.createKeyspace(CqlIdentifier.fromCql("shop"))
+                .ifNotExists()
+                .withSimpleStrategy(2)
+                .withDurableWrites(true);
+        SimpleStatement createKeySpaceStatment = keyspace.build();
+        session.execute(createKeySpaceStatment);
 
     }
     public CqlSession getSession(){

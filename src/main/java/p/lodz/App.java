@@ -20,6 +20,7 @@ public class App {
         CassandraConfig cassandraConfig = new CassandraConfig();
         ProductManager productManager = new ProductManager(cassandraConfig.getSession());
         Product product = new Product("test",69,10,"sportowe");
+        productManager.registerProduct(product);
         System.out.println(productManager.getProduct(product.getId()).toString());
     }
 }

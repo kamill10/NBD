@@ -1,4 +1,4 @@
-package p.lodz.Repositiories;
+/*package p.lodz.Repositiories;
 
 import com.datastax.oss.driver.api.core.addresstranslation.AddressTranslator;
 import com.datastax.oss.driver.api.core.context.DriverContext;
@@ -26,4 +26,4 @@ public class CassandraAddressTranslator implements AddressTranslator {
     public void close() {
 
     }
-}
+} */

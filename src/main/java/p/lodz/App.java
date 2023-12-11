@@ -13,11 +13,13 @@ import p.lodz.Repositiories.CassandraImplementations.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class App {
     public static void main(String[] args) {
         CassandraConfig cassandraConfig = new CassandraConfig();
         ProductManager productManager = new ProductManager(cassandraConfig.getSession());
-        productManager.registerProduct("buty",30,10,"zimowe");
+        Product product = new Product("test",69,10,"sportowe");
+        System.out.println(productManager.getProduct(product.getId()).toString());
     }
 }

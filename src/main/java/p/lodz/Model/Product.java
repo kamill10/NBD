@@ -4,11 +4,7 @@ import com.datastax.oss.driver.api.mapper.annotations.ClusteringColumn;
 import com.datastax.oss.driver.api.mapper.annotations.CqlName;
 import com.datastax.oss.driver.api.mapper.annotations.Entity;
 import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.bson.types.ObjectId;
+
 
 import java.util.UUID;
 
@@ -21,11 +17,11 @@ public class Product {
     @CqlName("id")
    private UUID id;
     @ClusteringColumn
-    @CqlName("product_name")
-    private String productName;
-
     @CqlName("base_cost")
     private double baseCost;
+
+    @CqlName("product_name")
+    private String  productName;
 
     @CqlName("discount")
     private double discount;
@@ -39,24 +35,30 @@ public class Product {
     private String description;
 
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", baseCost=" + baseCost +
+                ", productName='" + productName + '\'' +
+                ", discount=" + discount +
+                ", archived=" + archived +
+                ", numberOfProducts=" + numberOfProducts +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
     public Product(String productName,
                    double baseCost,
                    int numberOfProducts,
                    String description) {
+        id= UUID.randomUUID();
         this.productName = productName;
         this.baseCost = baseCost;
         this.numberOfProducts = numberOfProducts;
         this.description = description;
     }
-    public Product(double baseCost,
-                   String description,
-                   int numberOfProducts,
-                   String productName) {
-        this.productName = productName;
-        this.baseCost = baseCost;
-        this.numberOfProducts = numberOfProducts;
-        this.description = description;
-    }
+
 
     public Product() {
     }

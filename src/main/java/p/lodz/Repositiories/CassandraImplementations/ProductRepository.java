@@ -1,6 +1,8 @@
 package p.lodz.Repositiories.CassandraImplementations;
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder;
 import com.datastax.oss.driver.api.core.type.DataTypes;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
@@ -21,26 +23,26 @@ public class ProductRepository implements p.lodz.Repositiories.ProductRepository
         session.execute(SchemaBuilder.createTable(CqlIdentifier.fromCql("products"))
                 .ifNotExists()
                 .withPartitionKey(CqlIdentifier.fromCql("id"), DataTypes.UUID)
-                .withClusteringColumn(CqlIdentifier.fromCql("product_name"),DataTypes.TEXT)
-                .withColumn(CqlIdentifier.fromCql("base_cost"), DataTypes.DOUBLE)
+                .withClusteringColumn(CqlIdentifier.fromCql("base_cost"),DataTypes.DOUBLE)
+                .withColumn(CqlIdentifier.fromCql("product_name"), DataTypes.TEXT)
                 .withColumn(CqlIdentifier.fromCql("discount"), DataTypes.DOUBLE)
                 .withColumn(CqlIdentifier.fromCql("archived"), DataTypes.BOOLEAN)
                 .withColumn(CqlIdentifier.fromCql("number_of_products"), DataTypes.INT)
                 .withColumn(CqlIdentifier.fromCql("description"), DataTypes.TEXT)
-                .withClusteringOrder(CqlIdentifier.fromCql("product_name"), ClusteringOrder.ASC)
                 .build());
+
     }
 
     public ProductRepository(CqlSession session) {
         ProductRepository.session = session;
+        prepareTables();
         productMapper = new ProductMapperBuilder(session).build();
         productDao = productMapper.productDao();
-        //prepareTables();
     }
 
     @Override
-    public Product saveProduct(Product product) {
-        return productDao.create(product);
+    public void  saveProduct(Product product) {
+         productDao.create(product);
 
     }
 
@@ -56,17 +58,13 @@ public class ProductRepository implements p.lodz.Repositiories.ProductRepository
         return productDao.findProduct(id);
     }
 
-    @Override
-    public List<Product> findAllProducts() {
-       return  productDao.findAll();
-    }
 
     @Override
     public boolean  deleteProduct(Product product ) {
         return productDao.delete(product);
     }
 
-    @Override
+    /*@Override
     public boolean archiveProduct(Product product, UUID id, boolean archived) {
         return  productDao.archiveProduct(product,id,archived);
     }
@@ -74,5 +72,6 @@ public class ProductRepository implements p.lodz.Repositiories.ProductRepository
     @Override
     public boolean decrementProducts(Product product, UUID id, int numberOfProducts) {
         return productDao.decrementProducts(product,id,numberOfProducts);
-    }
+    } */
+
 }

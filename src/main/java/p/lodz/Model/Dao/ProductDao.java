@@ -9,25 +9,23 @@ import java.util.UUID;
 @Dao
 public interface ProductDao {
     @Insert
-    public Product create(Product product);
+     void create(Product product);
 
     @Delete(ifExists = true)
-    public boolean delete(Product product);
+     boolean delete(Product product);
 
     @Select
-    public Product findProduct(UUID id);
+     Product findProduct(UUID id);
 
-    @Select
-    public List<Product> findAll();
 
     @Update
-        public void update(Product product);
+    void update(Product product);
 
-    @Update(customWhereClause = "id = id AND archived = :archived")
+    /*@Update(customWhereClause = "id = id AND archived = :archived")
     boolean archiveProduct(Product product , UUID id , boolean archived);
 
     @Update(customWhereClause = "id = id AND number_of_products = :numberOfProducts")
-    boolean decrementProducts(Product product , UUID id , int numberOfProducts);
+    boolean decrementProducts(Product product , UUID id , int numberOfProducts); */
 
 
 

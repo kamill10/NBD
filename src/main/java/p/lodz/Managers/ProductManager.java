@@ -21,13 +21,15 @@ public class ProductManager {
         return productRepository.findProductById(id);
     }
 
-    public Product registerProduct(String productName, double baseCost, int numberOfProducts, String description){
-        Product product = new Product(baseCost, description, numberOfProducts, productName);
-        return productRepository.saveProduct(product);
+    public void  registerProduct(Product product){
+        productRepository.saveProduct(product);
+    }
+    public boolean deleteProduct(Product product ){
+        return productRepository.deleteProduct(product);
+    }
+    public void updateProduct(Product product){
+        productRepository.update(product);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAllProducts();
-    }
 
 }

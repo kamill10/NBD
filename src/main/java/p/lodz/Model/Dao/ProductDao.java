@@ -10,17 +10,18 @@ import java.util.UUID;
 @Dao
 public interface ProductDao {
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Insert
      void create(Product product);
-
     @StatementAttributes(consistencyLevel = "ONE")
     @Delete()
      boolean delete(Product product);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Select
      Product findProduct(UUID id);
 
-
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Update
     void update(Product product);
 

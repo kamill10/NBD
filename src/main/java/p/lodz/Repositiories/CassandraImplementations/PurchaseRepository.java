@@ -58,6 +58,7 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
                 .build());
 
     }
+    @StatementAttributes(consistencyLevel = "QUORUM")
     @Override
     public List<Purchase> findByClientId(UUID id) {
     Select select = QueryBuilder.selectFrom("rents_by_client").all()
@@ -74,6 +75,7 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
 
 
     @Override
+    @StatementAttributes(consistencyLevel = "QUORUM")
     public List<Purchase> findByProductId(UUID id) {
         Select select = QueryBuilder.selectFrom("rents_by_product").all()
                 .where(Relation.column("product_id").isEqualTo(literal(id)));
@@ -89,6 +91,7 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
 
 
     @Override
+    @StatementAttributes(consistencyLevel = "QUORUM")
     public Purchase  savePurchase(Purchase purchase) {
         Instant purchaseDate = Instant.now();
 
@@ -108,6 +111,7 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
     }
 
     @Override
+    @StatementAttributes(consistencyLevel = "QUORUM")
     public void endPurchase(Purchase rent ){
         Instant date = Instant.now();
         Update endPurchaseInClient = QueryBuilder.update("rents_by_client")

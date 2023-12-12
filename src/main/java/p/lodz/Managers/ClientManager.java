@@ -9,6 +9,7 @@ import p.lodz.Model.Type.ClientType;
 import p.lodz.Repositiories.CassandraImplementations.ClientRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ClientManager {
     private final p.lodz.Repositiories.ClientRepository clientRepository;
@@ -17,17 +18,13 @@ public class ClientManager {
         this.clientRepository = new ClientRepository(session);
     }
 
-    public Client getClient(ObjectId id){
+    public Client getClient(UUID id){
         return clientRepository.findClientById(id);
     }
 
-    public Client registerClient(String firstName, String lastName, String city, String street, String number, ClientType clientType) {
-        Address address = new Address(city, street, number);
-        Client client = new Client(firstName, lastName, address, clientType);
-        return clientRepository.saveClient(client);
+    public void  registerClient(Client client ) {
+
+        clientRepository.saveClient(client);
     }
 
-    public List<Client> getAllClients() {
-        return clientRepository.findAllClients();
-    }
 }

@@ -1,80 +1,105 @@
 package p.lodz.Model;
 
+import com.datastax.oss.driver.api.mapper.annotations.ClusteringColumn;
+import com.datastax.oss.driver.api.mapper.annotations.CqlName;
+import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.types.ObjectId;
+
 
 import java.time.LocalDate;
 import java.util.*;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+
+@Entity
+@CqlName("rents")
 public class Purchase {
 
-    @BsonProperty("purchase_date")
+    @Id
+    @PartitionKey
+    @CqlName("id")
+    private UUID id;
+
+    @CqlName("purchase_date")
+    @ClusteringColumn
     private LocalDate purchaseDate;
 
-    @BsonProperty("delivery_date")
+    @CqlName("delivery_data")
     private LocalDate deliveryDate;
 
-    @BsonProperty("final_cost")
+    @CqlName("final_cost")
     private double finalCost;
 
-    @BsonProperty("client")
-    private Client client;
+    @CqlName("client_id")
+    private UUID client;
 
-    @BsonProperty("products")
-    private List<ProductEntry> products;
+    @CqlName("product_id")
+    private UUID products;
 
-    public Purchase(Client client, List<ProductEntry> products) {
-        this.client = client;
-        this.products = products;
+    public Purchase(Client client, Product product) {
+        this.id = UUID.randomUUID();
+        this.client = client.getId();
+        this.products = product.getId();
         purchaseDate = LocalDate.now();
         setDeliveryTime();
-        setFinalCost();
         client.addMoneySpent(finalCost);
     }
-    public Purchase(Client client, ProductEntry product) {
-        this.client = client;
-        this.products = new ArrayList<>(Arrays.asList(product));
-        purchaseDate = LocalDate.now();
-        setDeliveryTime();
-        setFinalCost();
-        client.addMoneySpent(finalCost);
-    }
+    public Purchase(){};
 
-    @BsonCreator
-    public Purchase(@BsonProperty("purchase_date") LocalDate purchaseDate,
-                    @BsonProperty("delivery_date") LocalDate deliveryDate,
-                    @BsonProperty("final_cost") double finalCost,
-                    @BsonProperty("client") Client client,
-                    @BsonProperty("products") List<ProductEntry> products){
-        this.purchaseDate = purchaseDate;
-        this.deliveryDate = deliveryDate;
-        this.finalCost = finalCost;
-        this.client = client;
-        this.products = products;
-
-    }
 
     private void setDeliveryTime(){
-        deliveryDate = purchaseDate.plusDays(3 - client.getClientShorterDeliveryTime());
+        deliveryDate = purchaseDate.plusDays(3 );
     }
 
-    private void setFinalCost() {
-        products.forEach(e -> {
-            finalCost += e.getCost();
-        });
-
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
     }
+
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public double getFinalCost() {
+        return finalCost;
+    }
+
+    public void setFinalCost(double finalCost) {
+        this.finalCost = finalCost;
+    }
+
+    public UUID getClient() {
+        return client;
+    }
+
+    public void setClient(UUID client) {
+        this.client = client;
+    }
+
+    public UUID getProducts() {
+        return products;
+    }
+
+    public void setProducts(UUID products) {
+        this.products = products;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+
 }

@@ -1,64 +1,118 @@
 package p.lodz.Model;
 
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.types.ObjectId;
+import com.datastax.oss.driver.api.mapper.annotations.ClusteringColumn;
+import com.datastax.oss.driver.api.mapper.annotations.CqlName;
+import com.datastax.oss.driver.api.mapper.annotations.Entity;
+import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
 import p.lodz.Model.Type.ClientType;
 
-@Getter
-@Setter
-@NoArgsConstructor
+import java.util.UUID;
+
+
+@Entity
+@CqlName("clients")
 public class Client {
 
-    @BsonProperty("first_name")
-    private String firstName;
-    @BsonProperty("last_name")
-    private String lastName;
-    @BsonProperty("address")
-    Address address;
-    @BsonProperty("client_type")
-    ClientType clientType;
 
-    @BsonProperty("money_spent")
+    @PartitionKey
+    @CqlName("id")
+    private UUID id;
+
+
+    @ClusteringColumn
+    @CqlName("last_name")
+    private String lastName;
+
+    @CqlName("first_name")
+    private String firstName;
+
+
+    @CqlName("money_spent")
     private double moneySpent = 0;
 
-    public Client( String firstName, String lastName, Address address, ClientType clientType) {
+    @CqlName("client_type")
+    private String typ;
+
+    @CqlName("address_client")
+    private String address;
+
+
+
+    public Client(String firstName, String lastName, String typ,Address address) {
+        this.id = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
-        this.clientType = clientType;
+        this.typ = typ;
+        this.address = address.toString();
+    }
+    public Client(){};
+
+    public String getAddress() {
+        return address;
     }
 
-    @BsonIgnore
-    public double getClientDiscount(){
-        return clientType.getClientDiscount();
-    }
-    @BsonIgnore
-    public int getClientShorterDeliveryTime(){
-        return clientType.getShorterDeliveryTime();
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void addMoneySpent(double value){
         moneySpent += value;
     }
 
-
-    @BsonCreator
-    public Client(@BsonProperty("_id") ObjectId entityId,
-                  @BsonProperty("first_name") String firstName,
-                  @BsonProperty("last_name") String lastName,
-                  @BsonProperty("client_type") ClientType clientType,
-                  @BsonProperty("money_spent") double money,
-                  @BsonProperty("address") Address address) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.clientType = clientType;
-        this.moneySpent = money;
-        this.address = address;
+    public UUID getId() {
+        return id;
     }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+
+
+    public double getMoneySpent() {
+        return moneySpent;
+    }
+
+    public void setMoneySpent(double moneySpent) {
+        this.moneySpent = moneySpent;
+    }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", moneySpent=" + moneySpent +
+                ", typ='" + typ + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
+
+    public String getTyp() {
+        return typ;
+    }
+
+    public void setTyp(String typ) {
+        this.typ = typ;
+    }
+
+
 }

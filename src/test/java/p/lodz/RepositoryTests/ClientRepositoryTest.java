@@ -7,52 +7,72 @@ import p.lodz.Model.Address;
 import p.lodz.Model.Client;
 import p.lodz.Model.Type.Premium;
 import p.lodz.Model.Type.Standard;
+import p.lodz.Repositiories.CassandraConfig;
 import p.lodz.Repositiories.CassandraImplementations.ClientRepository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientRepositoryTest {
-/*
-    static AbstractMongoRepository repository = new AbstractMongoRepository();
-    static MongoDatabase mongoDatabase = repository.getDatabase();
-    static p.lodz.Repositiories.ClientRepository clientRepository = new ClientRepository(mongoDatabase.getCollection("clients_test", Client.class));
+    static CassandraConfig config = new CassandraConfig();
 
-    // Initialize test clients
-    Client testClient1 = new Client(
-            "Robert", "Lewandowski", new Address("Lodz1", "przykladow2a", "44A"), new Standard());
-    Client testClient2 = new Client(
-            "Konrad1", "koza1", new Address("Lodz1", "przykladow2a", "44A"), new Premium());
-
+    static p.lodz.Repositiories.ClientRepository clientRepository = new ClientRepository(config.getSession());
 
     @Test
-    void saveClientTest() {
-        assertEquals(clientRepository.saveClient(testClient1), testClient1);
+    public void testSaveClient() {
+        Client client = new Client("TestFirstName", "TestLastName", "premium", new Address("TestCity", "TestStreet", "TestNumber"));
+
+        clientRepository.saveClient(client);
+
+        Client retrievedClient = clientRepository.findClientById(client.getId());
+        assertNotNull(retrievedClient);
+
+        assertEquals(client.getFirstName(), retrievedClient.getFirstName());
+        assertEquals(client.getLastName(), retrievedClient.getLastName());
     }
 
     @Test
-    void deleteClientTest() {
-        clientRepository.saveClient(testClient2);
-        assertTrue(clientRepository.deleteClient(testClient2.getEntityId()));
+    public void testUpdateClient() {
+        Client client = new Client("TestFirstName", "TestLastName", "premium", new Address("TestCity", "TestStreet", "TestNumber"));
+
+        clientRepository.saveClient(client);
+
+        client.setFirstName("UpdatedFirstName");
+        clientRepository.update(client);
+
+        Client updatedClient = clientRepository.findClientById(client.getId());
+
+        assertNotNull(updatedClient);
+
+        assertEquals("UpdatedFirstName", updatedClient.getFirstName());
     }
 
     @Test
-    void findClientByIdTest() {
-        Client client = clientRepository.saveClient(testClient2);
-        assertEquals(clientRepository.findClientById(testClient2.getEntityId()), client);
+    public void testFindClientById() {
+        Client client = new Client("TestFirstName", "TestLastName", "premium", new Address("TestCity", "TestStreet", "TestNumber"));
+
+        clientRepository.saveClient(client);
+
+        Client retrievedClient = clientRepository.findClientById(client.getId());
+
+        assertNotNull(retrievedClient);
+
+        assertEquals(client.getFirstName(), retrievedClient.getFirstName());
     }
 
     @Test
-    void findAllClients(){
-        assertEquals(clientRepository.findAllClients().size(), 2);
+    public void testDeleteClient() {
+        Client client = new Client("TestFirstName", "TestLastName", "premium", new Address("TestCity", "TestStreet", "TestNumber"));
+
+        clientRepository.saveClient(client);
+
+        boolean deletionResult = clientRepository.deleteClient(client);
+
+        assertTrue(deletionResult);
+
+        Client deletedClient = clientRepository.findClientById(client.getId());
+
+        assertNull(deletedClient);
     }
 
-    @AfterAll
-    static void cleanDataBase() {
-        // Remove the collection after tests
-        //Document command = new Document("replSetStepDown", 60);
-        //mongoDatabase.runCommand(command);
-        assertEquals(clientRepository.findAllClients().size(), 2);
-        mongoDatabase.getCollection("clients_test").drop();
-    } */
+
 }

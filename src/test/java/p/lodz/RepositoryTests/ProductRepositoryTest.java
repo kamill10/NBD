@@ -1,81 +1,63 @@
 package p.lodz.RepositoryTests;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import p.lodz.Model.Product;
+import p.lodz.Repositiories.CassandraConfig;
+import p.lodz.Repositiories.CassandraImplementations.ProductRepository;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ProductRepositoryTest {
-   /* static AbstractMongoRepository repository = new AbstractMongoRepository();
 
-    static Shop shop = new Shop();
-    static MongoDatabase productDatabase = shop.getRepository().getDatabase();
+    static CassandraConfig config;
+    static ProductRepository productRepository;
 
-    static p.lodz.Repositiories.ProductRepository productRepository = new ProductRepository(productDatabase.getCollection("products", Product.class));
-
-
-    @Test
-    @Order(2)
-    void saveProductTest() {
-        Product product = new Product("buty", 1, 1, "aaa");
-        assertEquals(product, productRepository.saveProduct(product));
+    @BeforeAll
+    public static void setup() {
+        config = new CassandraConfig();
+        productRepository = new ProductRepository(config.getSession());
     }
 
-    @Test
-    @Order(3)
-    void archiveProductTest() {
-        Product savedProduct = productRepository.saveProduct(new Product("skora", 1, 1, "aaa"));
-       Product product1 = productRepository.archiveProduct(savedProduct.getEntityId(), true);
-        assertTrue(product1.isArchived());
-    }
 
     @Test
-    @Order(4)
-    void decrementNumberOfProductTest() {
-        Product savedProduct = productRepository.saveProduct(new Product("koszulka", 1, 1, "aaa"));
-        Product productAfterDecrement = productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 1);
-        assertEquals(0, productAfterDecrement.getNumberOfProducts());
-        assertThrows(MongoCommandException.class, () -> productRepository.decrementNumberOfProducts(savedProduct.getEntityId(), 2));
-        assertEquals(0, productRepository.findProductById(savedProduct.getEntityId()).getNumberOfProducts());
-
-    }
-
-    @Test
-    @Order(5)
-    void findProductByIdTest() {
-        Product savedProduct = productRepository.saveProduct(new Product("dres", 1, 1, "aaa"));
-        assertEquals(savedProduct.getEntityId(), productRepository.findProductById(savedProduct.getEntityId()).getEntityId());
-    }
-
-    @Test
-    @Order(1)
-    void findAllProductsTest() {
-        Product product = new Product("suknia", 1, 1, "aaa");
-        Product product2 = new Product("talon", 1, 1, "aaa");
+    public void testSaveProduct() {
+        Product product = new Product("TestProductName", 100.0, 10, "TestDescription");
         productRepository.saveProduct(product);
-        productRepository.saveProduct(product2);
-        assertEquals(2, productRepository.findAllProducts().size());
+        Product retrievedProduct = productRepository.findProductById(product.getId());
+        assertNotNull(retrievedProduct);
+        assertEquals(product.getProductName(), retrievedProduct.getProductName());
+        assertEquals(product.getBaseCost(), retrievedProduct.getBaseCost());
     }
 
     @Test
-    @Order(6)
-    void deleteProduct() {
-        Product product = new Product("aaa", 1, 1, "aaa");
-        assertEquals(product, productRepository.saveProduct(product));
-        assertTrue(productRepository.deleteProduct(product.getEntityId()));
-        assertFalse(productRepository.deleteProduct(new ObjectId()));
+    public void testUpdateProduct() {
+        Product product = new Product("TestProductName", 100.0, 10, "TestDescription");
+        productRepository.saveProduct(product);
+        product.setProductName("UpdatedProductName");
+        productRepository.update(product);
+        Product updatedProduct = productRepository.findProductById(product.getId());
+        assertNotNull(updatedProduct);
+        assertEquals("UpdatedProductName", updatedProduct.getProductName());
     }
 
-    @AfterAll
-    static void cleanDataBase() {
-        assertEquals(productRepository.findAllProducts().size(),6);
-        //Document command = new Document("replSetStepDown", 60);
-        //productDatabase.runCommand(command);
-        assertEquals(productRepository.findAllProducts().size(),6);
-        shop.close();
-//        repository.close();
+    @Test
+    public void testFindProductById() {
+        Product product = new Product("TestProductName", 100.0, 10, "TestDescription");
+        productRepository.saveProduct(product);
+        Product retrievedProduct = productRepository.findProductById(product.getId());
+        assertNotNull(retrievedProduct);
+        assertEquals(product.getProductName(), retrievedProduct.getProductName());
+    }
 
-    } */
-
-
-
-
+    @Test
+    public void testDeleteProduct() {
+        Product product = new Product("TestProductName", 100.0, 10, "TestDescription");
+        productRepository.saveProduct(product);
+        boolean deletionResult = productRepository.deleteProduct(product);
+        assertTrue(deletionResult);
+        Product deletedProduct = productRepository.findProductById(product.getId());
+        assertNull(deletedProduct);
+    }
 }

@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PurchaseRepository {
-    Client findByClientId(UUID id);
-    Product findByProductId(UUID id);
-    void  savePurchase(Purchase purchase);
-    void endPurchase(UUID id);
+    List<Purchase> findByClientId(UUID id);
+    List<Purchase> findByProductId(UUID id);
+    Purchase  savePurchase(Purchase purchase);
+    void endPurchase(Purchase purchase);
+
 
 
 }

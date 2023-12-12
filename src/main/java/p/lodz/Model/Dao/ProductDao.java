@@ -13,7 +13,8 @@ public interface ProductDao {
     @Insert
      void create(Product product);
 
-    @Delete(ifExists = true)
+    @StatementAttributes(consistencyLevel = "ONE")
+    @Delete()
      boolean delete(Product product);
 
     @Select
@@ -22,14 +23,6 @@ public interface ProductDao {
 
     @Update
     void update(Product product);
-
-    /*@Update(customWhereClause = "id = id AND archived = :archived")
-    boolean archiveProduct(Product product , UUID id , boolean archived);
-
-    @Update(customWhereClause = "id = id AND number_of_products = :numberOfProducts")
-    boolean decrementProducts(Product product , UUID id , int numberOfProducts); */
-
-
 
 
 }

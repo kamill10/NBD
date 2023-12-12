@@ -11,29 +11,25 @@ import java.util.*;
 
 
 
-@Entity
-@CqlName("rents")
+
 public class Purchase {
 
-    @Id
-    @PartitionKey
-    @CqlName("id")
+
     private UUID id;
 
-    @CqlName("purchase_date")
-    @ClusteringColumn
+
     private LocalDate purchaseDate;
 
-    @CqlName("delivery_data")
+
     private LocalDate deliveryDate;
 
-    @CqlName("final_cost")
+
     private double finalCost;
 
-    @CqlName("client_id")
+
     private UUID client;
 
-    @CqlName("product_id")
+
     private UUID products;
 
     public Purchase(Client client, Product product) {
@@ -42,6 +38,7 @@ public class Purchase {
         this.products = product.getId();
         purchaseDate = LocalDate.now();
         setDeliveryTime();
+        this.finalCost = product.getBaseCost();
         client.addMoneySpent(finalCost);
     }
     public Purchase(){};
@@ -99,6 +96,17 @@ public class Purchase {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "id=" + id +
+                ", purchaseDate=" + purchaseDate +
+                ", deliveryDate=" + deliveryDate +
+                ", finalCost=" + finalCost +
+                ", client=" + client +
+                ", products=" + products +
+                '}';
     }
 
 

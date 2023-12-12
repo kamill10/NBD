@@ -7,64 +7,77 @@ import p.lodz.Model.Type.Premium;
 import p.lodz.Repositiories.*;
 import p.lodz.Repositiories.CassandraImplementations.PurchaseRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 public class PurchaseRepositoryTest {
 
-   /* static AbstractMongoRepository repository = new AbstractMongoRepository();
-    static MongoDatabase purchaseDatabase = repository.getDatabase();
-    private static Client testClient1 =  new Client("jan", "kowalski", new Address("aaa", "bbb", "ccc"),new Premium());
-    private static  Client testClient2 =  new Client("zdichu", "mulat", new Address("pcim", "dolny", "ccc"),new Premium());
 
-    static Product product = new Product("aaa", 10, 2, "aaa");
-    static Product product2 = new Product("buty", 20, 3, "luksusowe buty arktyczne");
-    static PurchaseRepository purchaseRepository  = new PurchaseRepository(purchaseDatabase.getCollection("purchases_test",Purchase.class));
-    Purchase purchase1 = new Purchase(testClient1,new ProductEntry(product, 2));
-    Purchase purchase2 = new Purchase(testClient2,new ProductEntry(product2, 3));
+    Client client2 = new Client("Adnreas","Kaczka","premium",new Address("d","s","12"));
+    Product product = new Product("Zmniejszy",69,10,"sportowe");
+    CassandraConfig config = new CassandraConfig();
+    PurchaseRepository purchaseRepository = new PurchaseRepository(config.getSession());
+    Purchase purchase = new Purchase(client2,product);
 
     @Test
-    @Order(1)
-    void savePurchaseTest() {
-        Purchase purchase = purchaseRepository.savePurchase(purchase1);
-        assertEquals(purchase.getEntityId(),purchase1.getEntityId());
-    }
-   @Test
-   @Order(2)
-    void findPurchaseById(){
-       purchaseRepository.savePurchase(purchase2);
-       assertEquals(purchase2.getEntityId(),purchaseRepository.findPurchaseById(purchase2.getEntityId()).getEntityId());
-   }
-   @Test
-   @Order(3)
-   void findAllClientPurchase(){
-       assertEquals(purchaseRepository.findAllClientPurchases(testClient1).size(),1);
-   }
+    public void testSavePurchase() {
+        Purchase savedPurchase = purchaseRepository.savePurchase(purchase);
+        assertNotNull(savedPurchase.getId());
+        Purchase retrievedPurchase = purchaseRepository.findByClientId(client2.getId()).get(0);
 
-    @Test
-    @Order(4)
-    void findAllPurchases(){
-        assertEquals(purchaseRepository.findAllPurchases().size(), 2);
+        assertEquals(client2.getId(), retrievedPurchase.getClient());
+        assertEquals(product.getId(), retrievedPurchase.getProducts());
+        assertEquals(purchase.getPurchaseDate(), retrievedPurchase.getPurchaseDate());
+        assertEquals(purchase.getDeliveryDate(), retrievedPurchase.getDeliveryDate());
+        assertEquals(purchase.getFinalCost(), retrievedPurchase.getFinalCost());
     }
 
     @Test
-    @Order(5)
-    void primaryNodeDisabled() {
+    public void testFindByClientId() {
+        purchaseRepository.savePurchase(purchase);
 
-        assertEquals(purchaseRepository.findAllPurchases().size(), 2);
-        List<Purchase> purchases = purchaseRepository.findAllPurchases();
-        assertEquals(purchases.size(), 2);
-        double finalCost = purchases.stream()
-                .mapToDouble(Purchase::getFinalCost)
-                .sum();
-        assertEquals(finalCost, 80);
+        List<Purchase> purchases = purchaseRepository.findByClientId(client2.getId());
+        assertNotNull(purchases);
+        assertFalse(purchases.isEmpty());
+        Purchase retrievedPurchase = purchases.get(0);
+        assertEquals(client2.getId(), retrievedPurchase.getClient());
+        assertEquals(product.getId(), retrievedPurchase.getProducts());
+        assertEquals(purchase.getPurchaseDate(), retrievedPurchase.getPurchaseDate());
+        assertEquals(purchase.getDeliveryDate(), retrievedPurchase.getDeliveryDate());
+        assertEquals(purchase.getFinalCost(), retrievedPurchase.getFinalCost());
     }
 
-    @AfterAll
-    static void cleanDataBase(){
-        purchaseDatabase.getCollection("purchases_test").drop(); // Remove the collection
-        repository.close();
-    } */
+    @Test
+    public void testFindByProductId() {
+        purchaseRepository.savePurchase(purchase);
+        List<Purchase> purchases = purchaseRepository.findByProductId(product.getId());
+        assertNotNull(purchases);
+        assertFalse(purchases.isEmpty());
+        Purchase retrievedPurchase = purchases.get(0);
+        assertEquals(client2.getId(), retrievedPurchase.getClient());
+        assertEquals(product.getId(), retrievedPurchase.getProducts());
+        assertEquals(purchase.getPurchaseDate(), retrievedPurchase.getPurchaseDate());
+        assertEquals(purchase.getDeliveryDate(), retrievedPurchase.getDeliveryDate());
+        assertEquals(purchase.getFinalCost(), retrievedPurchase.getFinalCost());
+    }
+
+    @Test
+    public void testEndPurchase() {
+        Client client2 = new Client("Adnreas","Kaczka","premium",new Address("d","s","12"));
+        Product product = new Product("Zmniejszy",69,10,"sportowe");
+        Purchase purchaseTest= new Purchase(client2,product);
+        purchaseRepository.savePurchase(purchaseTest);
+        LocalDate data = purchaseTest.getDeliveryDate();
+        purchaseRepository.endPurchase(purchase);
+
+        Purchase endedPurchase = purchaseRepository.findByClientId(client2.getId()).get(0);
+        assertFalse(endedPurchase.getDeliveryDate().isAfter(data));
+
+
+
+    }
+
 }

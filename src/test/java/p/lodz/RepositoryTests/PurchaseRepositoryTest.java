@@ -82,6 +82,7 @@ public class PurchaseRepositoryTest {
         purchaseRepository.endPurchase(purchase);
 
         Purchase endedPurchase = purchaseRepository.findByClientId(client2.getId()).get(0);
+        System.out.println("size"+purchaseRepository.findByClientId(client2.getId()).size());
         assertFalse(endedPurchase.getDeliveryDate().isAfter(data));
 
 

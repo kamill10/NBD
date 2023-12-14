@@ -17,24 +17,15 @@ import java.util.UUID;
 @CqlName("clienttype")
 public class ClientType {
 
+
     @PartitionKey
-    @CqlName("id")
-    protected UUID id;
-
-    public UUID getId() {
-        return id;
-    }
-
+    protected String discriminator;
     @CqlName("client_discount")
     protected double clientDiscount;
-
-   @CqlName("discriminator")
-   protected String discriminator;
     @CqlName("shorter_delivery_time")
     protected int shorterDeliveryTime;
 
     public ClientType(double clientDiscount, int shorterDeliveryTime,String discriminator) {
-        this.id = UUID.randomUUID();
         this.clientDiscount = clientDiscount;
         this.shorterDeliveryTime = shorterDeliveryTime;
         this.discriminator = discriminator;

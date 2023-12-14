@@ -25,6 +25,7 @@ public class CassandraConfig implements AutoCloseable {
                 .withAuthCredentials("cassandra", "cassandra")
                 .withLocalDatacenter("dc1")
                 //za pierwszy razem zakomentowac
+
                 .withKeyspace(CqlIdentifier.fromCql("shop"))
                 .build();
 

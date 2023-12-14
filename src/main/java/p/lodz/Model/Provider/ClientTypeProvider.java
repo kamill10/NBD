@@ -60,20 +60,20 @@ public class ClientTypeProvider   {
         }
     } */
     public void  createType(ClientType clientType) {
-        String insertQuery = "INSERT INTO shop.clienttype (id, client_discount, shorter_delivery_time, discriminator) VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO shop.clienttype ( client_discount, shorter_delivery_time, discriminator) VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = session.prepare(insertQuery);
         switch (clientType.getDiscriminator()) {
             case "premium" -> {
                 Premium premium = (Premium) clientType;
-                session.execute(preparedStatement.bind(premium.getId(), premium.getClientDiscount(), premium.getShorterDeliveryTime(), premium.getDiscriminator()));
+                session.execute(preparedStatement.bind(premium.getClientDiscount(), premium.getShorterDeliveryTime(), premium.getDiscriminator()));
             }
             case "standard" -> {
                 Standard standard = (Standard) clientType;
-                session.execute(preparedStatement.bind(standard.getId(), standard.getClientDiscount(), standard.getShorterDeliveryTime(), standard.getDiscriminator()));
+                session.execute(preparedStatement.bind(standard.getClientDiscount(), standard.getShorterDeliveryTime(), standard.getDiscriminator()));
             }
             case "deluxe" -> {
                 PremiumDeluxe deluxe = (PremiumDeluxe) clientType;
-                session.execute(preparedStatement.bind(deluxe.getId(), deluxe.getClientDiscount(), deluxe.getShorterDeliveryTime(),deluxe.getDiscriminator()));
+                session.execute(preparedStatement.bind( deluxe.getClientDiscount(), deluxe.getShorterDeliveryTime(),deluxe.getDiscriminator()));
 
             }
             default -> throw new IllegalArgumentException("Unknown client type discriminator: " + clientType.getDiscriminator());

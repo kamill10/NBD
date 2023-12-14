@@ -31,9 +31,15 @@ public class ClientRepository implements p.lodz.Repositiories.ClientRepository {
         clientMapper = new ClientMapperBuilder(session).build();
         clientDao = clientMapper.clientDao();
         clientTypeRepo = new ClientTypeRepo(session);
-        clientTypeRepo.create(new Premium());
-        clientTypeRepo.create(new Standard());
-        clientTypeRepo.create(new PremiumDeluxe());
+        if(!clientTypeRepo.findByType("premium")){
+            clientTypeRepo.create(new Premium());
+        }
+        if(!clientTypeRepo.findByType("standard")){
+            clientTypeRepo.create(new Standard());
+        }
+        if(!clientTypeRepo.findByType("deluxe")){
+            clientTypeRepo.create(new PremiumDeluxe());
+        }
     }
     public static void prepareTables(){
 

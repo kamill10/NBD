@@ -30,10 +30,11 @@ import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 public class PurchaseRepository implements p.lodz.Repositiories.PurchaseRepository {
 
     CqlSession session;
-    ClientRepository clientRepository;
+    ProductRepository productRepository;
 
-    public PurchaseRepository(CqlSession session) {
+    public PurchaseRepository(CqlSession session, ProductRepository productRepository) {
         this.session = session;
+        this.productRepository = productRepository;
         createTable();
     }
 
@@ -41,8 +42,8 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
         session.execute(SchemaBuilder.createTable(CqlIdentifier.fromCql("rents_by_client"))
                 .ifNotExists()
                 .withPartitionKey(CqlIdentifier.fromCql("client_id"), DataTypes.UUID)
-                .withClusteringColumn(CqlIdentifier.fromCql("id"), DataTypes.UUID)
-                .withColumn(CqlIdentifier.fromCql("purchase_date"),DataTypes.TIMESTAMP)
+                .withClusteringColumn(CqlIdentifier.fromCql("purchase_date"), DataTypes.TIMESTAMP)
+                .withColumn(CqlIdentifier.fromCql("id"),DataTypes.UUID)
                 .withColumn(CqlIdentifier.fromCql("delivery_data"), DataTypes.TIMESTAMP)
                 .withColumn(CqlIdentifier.fromCql("final_cost"), DataTypes.DOUBLE)
                 .withColumn(CqlIdentifier.fromCql("product_id"), DataTypes.UUID)
@@ -50,8 +51,8 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
         session.execute(SchemaBuilder.createTable(CqlIdentifier.fromCql("rents_by_product"))
                 .ifNotExists()
                 .withPartitionKey(CqlIdentifier.fromCql("product_id"), DataTypes.UUID)
-                .withClusteringColumn(CqlIdentifier.fromCql("id"), DataTypes.UUID)
-                .withColumn(CqlIdentifier.fromCql("purchase_date"),DataTypes.TIMESTAMP)
+                .withClusteringColumn(CqlIdentifier.fromCql("purchase_date"), DataTypes.TIMESTAMP)
+                .withColumn(CqlIdentifier.fromCql("id"),DataTypes.UUID)
                 .withColumn(CqlIdentifier.fromCql("delivery_data"), DataTypes.TIMESTAMP)
                 .withColumn(CqlIdentifier.fromCql("final_cost"), DataTypes.DOUBLE)
                 .withColumn(CqlIdentifier.fromCql("client_id"), DataTypes.UUID)
@@ -61,8 +62,8 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
     @StatementAttributes(consistencyLevel = "QUORUM")
     @Override
     public List<Purchase> findByClientId(UUID id) {
-    Select select = QueryBuilder.selectFrom("rents_by_client").all()
-            .where(Relation.column("client_id").isEqualTo(literal(id)));
+        Select select = QueryBuilder.selectFrom("rents_by_client").all()
+                .where(Relation.column("client_id").isEqualTo(literal(id)));
         ResultSet resultSet = session.execute(select.build());
         List<Row> result = resultSet.all();
         List<Purchase>purchases = new ArrayList<>();
@@ -93,6 +94,9 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
     @Override
     @StatementAttributes(consistencyLevel = "QUORUM")
     public Purchase  savePurchase(Purchase purchase) {
+        Product product = productRepository.findProductById(purchase.getProducts());
+        product.setNumberOfProducts(product.getNumberOfProducts()-1);
+        productRepository.update(product);
         Instant purchaseDate = Instant.now();
 
         LocalDate date = purchase.getDeliveryDate();
@@ -102,11 +106,16 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
 
         String insertQuery = "INSERT INTO shop.rents_by_client (client_id, purchase_date,id,delivery_data, final_cost,product_id) VALUES (?, ?, ?, ?,?,?)";
         PreparedStatement preparedStatement = session.prepare(insertQuery);
-        session.execute(preparedStatement.bind(purchase.getClient(),purchaseDate,purchase.getId(),deliveryDate ,purchase.getFinalCost(),purchase.getProducts()));
+        //session.execute(preparedStatement.bind(purchase.getClient(),purchaseDate,purchase.getId(),deliveryDate ,purchase.getFinalCost(),purchase.getProducts()));
 
         String insertQuery2 = "INSERT INTO shop.rents_by_product (product_id,id, purchase_date,delivery_data, final_cost,client_id) VALUES (?, ?, ?, ?,?,?)";
         PreparedStatement preparedStatement2 = session.prepare(insertQuery2);
-        session.execute(preparedStatement2.bind(purchase.getProducts(),purchase.getId(),purchaseDate,deliveryDate ,purchase.getFinalCost(),purchase.getClient()));
+        //session.execute(preparedStatement2.bind(purchase.getProducts(),purchase.getId(),purchaseDate,deliveryDate ,purchase.getFinalCost(),purchase.getClient()));
+        BatchStatement batchStatement = BatchStatement.builder(BatchType.LOGGED)
+                .addStatement(preparedStatement.bind(purchase.getClient(),purchaseDate,purchase.getId(),deliveryDate ,purchase.getFinalCost(),purchase.getProducts()))
+                .addStatement(preparedStatement2.bind(purchase.getProducts(),purchase.getId(),purchaseDate,deliveryDate ,purchase.getFinalCost(),purchase.getClient()))
+                .build();
+        session.execute(batchStatement);
         return purchase;
     }
 
@@ -117,12 +126,12 @@ public class PurchaseRepository implements p.lodz.Repositiories.PurchaseReposito
         Update endPurchaseInClient = QueryBuilder.update("rents_by_client")
                 .setColumn("delivery_data",QueryBuilder.literal(date))
                 .where(Relation.column("client_id").isEqualTo(literal(rent.getClient())))
-                .where(Relation.column("id").isEqualTo(literal(rent.getId())));
+                .where(Relation.column("purchase_date").isEqualTo(literal(rent.getPurchaseDate())));
 
         Update endPurchaseInProduct = QueryBuilder.update("rents_by_product")
                 .setColumn("delivery_data",QueryBuilder.literal(date))
                 .where(Relation.column("product_id").isEqualTo(literal(rent.getProducts())))
-                .where(Relation.column("id").isEqualTo(literal(rent.getId())));
+                .where(Relation.column("purchase_date").isEqualTo(literal(rent.getPurchaseDate())));
         BatchStatement batchStatement = BatchStatement.builder(BatchType.LOGGED)
                 .addStatement(endPurchaseInClient.build())
                 .addStatement(endPurchaseInProduct.build())

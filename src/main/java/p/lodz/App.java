@@ -21,26 +21,26 @@ import java.util.List;
 import java.util.UUID;
 
 public class App {
-    public static void main(String[] args) {
-        CassandraConfig cassandraConfig = new CassandraConfig();
-        ProductManager productManager = new ProductManager(cassandraConfig.getSession());
-        ClientManager clientManager = new ClientManager(cassandraConfig.getSession());
-        Product product = new Product("Zmniejszy",69,10,"sportowe");
-        productManager.registerProduct(product);
-        product.setNumberOfProducts(9);
-        productManager.updateProduct(product);
-        System.out.println(productManager.getProduct(product.getId()).toString());
-        Client client2 = new Client("Adnreas","Kaczka","premium",new Address("d","s","12"));
-        System.out.println(client2.getTyp());
-        clientManager.registerClient(client2);
-        System.out.println(clientManager.getClient(client2.getId()).toString());
+    public static void main(String[] args) throws Exception {
+        try(CassandraConfig cassandraConfig = new CassandraConfig()){
+            ProductManager productManager = new ProductManager(cassandraConfig.getSession());
+            ClientManager clientManager = new ClientManager(cassandraConfig.getSession());
+            Product product = new Product("Zmniejszy",69,10,"sportowe");
+            productManager.registerProduct(product);
+            product.setNumberOfProducts(9);
+            productManager.updateProduct(product);
+            System.out.println(productManager.getProduct(product.getId()).toString());
+            Client client2 = new Client("Mateusz","Smoła","premium",new Address("d","s","12"));
+            clientManager.registerClient(client2);
+            System.out.println(clientManager.getClient(client2.getId()).toString());
 
-        PurchaseManager purchaseManager = new PurchaseManager(cassandraConfig.getSession(),productManager.getProductRepository());
-        Purchase purchase = purchaseManager.registerPurchase(client2,product);
-        System.out.println(purchaseManager.getPurchaseByClientId(client2.getId()));
-        System.out.println(purchaseManager.getPurchaseByProductId(product.getId()));
-        purchaseManager.endPurchase(purchase);
-        System.out.println(LocalDate.now());
+            PurchaseManager purchaseManager = new PurchaseManager(cassandraConfig.getSession(), (ProductRepository) productManager.getProductRepository());
+            Purchase purchase = purchaseManager.registerPurchase(client2,product);
+            System.out.println(purchaseManager.getPurchaseByClientId(client2.getId()));
+            System.out.println(purchaseManager.getPurchaseByProductId(product.getId()));
+            purchaseManager.endPurchase(purchase);
+        }
+
 
     }
 }

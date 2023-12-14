@@ -15,8 +15,8 @@ public class PurchaseManager {
     private final ProductRepository productRepository;
 
 
-    public PurchaseManager(CqlSession session,ProductRepository productRepository) {
-        this.purchaseRepository = new PurchaseRepository(session);
+    public PurchaseManager(CqlSession session, p.lodz.Repositiories.CassandraImplementations.ProductRepository productRepository) {
+        this.purchaseRepository = new PurchaseRepository(session,productRepository);
         this.productRepository = productRepository;
     }
 

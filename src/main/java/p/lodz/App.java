@@ -35,7 +35,7 @@ public class App {
             System.out.println(clientManager.getClient(client2.getId()).toString());
 
             PurchaseManager purchaseManager = new PurchaseManager(cassandraConfig.getSession(), (ProductRepository) productManager.getProductRepository());
-            Purchase purchase = purchaseManager.registerPurchase(client2,product);
+            purchaseManager.registerPurchase(client2,product);
             System.out.println(purchaseManager.getPurchaseByClientId(client2.getId()));
             System.out.println(purchaseManager.getPurchaseByProductId(product.getId()));
         }

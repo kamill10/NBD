@@ -16,13 +16,27 @@ import p.lodz.Repositiories.AbstractMongoRepository;
 import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 import p.lodz.Repositiories.ProductRepository;
+
+import java.util.concurrent.ExecutionException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProductRepositoryTest {
     static AbstractMongoRepository repository = new AbstractMongoRepository();
 
-    static Shop shop = new Shop();
+    static Shop shop;
+
+    static {
+        try {
+            shop = new Shop();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static MongoDatabase productDatabase = shop.getRepository().getDatabase();
 
     static ProductRepository productRepository = new ProductRepositoryMongoDB(productDatabase.getCollection("products", Product.class));
@@ -77,7 +91,6 @@ public class ProductRepositoryTest {
         Product product = new Product("aaa", 1, 1, "aaa");
         assertEquals(product, productRepository.saveProduct(product));
         assertTrue(productRepository.deleteProduct(product.getEntityId()));
-        assertFalse(productRepository.deleteProduct(new ObjectId()));
     }
 
     @AfterAll

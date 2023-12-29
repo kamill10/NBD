@@ -2,13 +2,13 @@ package p.lodz.Repositiories.MongoImplementations;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import org.bson.types.ObjectId;
 import p.lodz.Model.Client;
 import p.lodz.Model.Purchase;
 import p.lodz.Repositiories.PurchaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PurchaseRepositoryMongoDB implements PurchaseRepository {
 
@@ -20,7 +20,7 @@ public class PurchaseRepositoryMongoDB implements PurchaseRepository {
 
 
     @Override
-    public Purchase findPurchaseById(ObjectId id) {
+    public Purchase findPurchaseById(UUID id) {
         return purchasesCollection.find(Filters.eq("_id", id)).first();
     }
 

@@ -5,14 +5,12 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.Updates;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Model.Product;
 import p.lodz.Repositiories.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ProductRepositoryMongoDB implements ProductRepository {
     private final MongoCollection<Product> mongoCollection;
@@ -27,21 +25,21 @@ public class ProductRepositoryMongoDB implements ProductRepository {
     }
 
     @Override
-    public Product archiveProduct(ObjectId id, boolean value) {
+    public Product archiveProduct(UUID id, boolean value) {
         return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
                 Updates.set("archived", value),
                 new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
     }
 
     @Override
-    public Product decrementNumberOfProducts(ObjectId id, int quantity) {
+    public Product decrementNumberOfProducts(UUID id, int quantity) {
         return mongoCollection.findOneAndUpdate(Filters.eq("_id", id),
                 Updates.inc("number_of_products", -quantity),
                 new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
     }
 
     @Override
-    public Product findProductById(ObjectId id) {
+    public Product findProductById(UUID id) {
         return mongoCollection.find(Filters.eq("_id", id)).first();
     }
 
@@ -51,7 +49,7 @@ public class ProductRepositoryMongoDB implements ProductRepository {
     }
 
     @Override
-    public boolean deleteProduct(ObjectId id) {
+    public boolean deleteProduct(UUID id) {
         Product deletedProduct = mongoCollection.findOneAndDelete(Filters.eq("_id", id));
         return deletedProduct != null;
     }

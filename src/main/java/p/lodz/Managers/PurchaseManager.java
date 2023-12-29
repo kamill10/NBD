@@ -4,9 +4,12 @@ import com.mongodb.*;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import jakarta.persistence.LockModeType;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.bson.types.ObjectId;
 import p.lodz.Exceptions.InvalidDataException;
 import p.lodz.Exceptions.InvalidPurchaseException;
+import p.lodz.KafkaConsument;
+import p.lodz.KafkaProducent;
 import p.lodz.Model.*;
 import p.lodz.Repositiories.AbstractMongoRepository;
 import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
@@ -16,21 +19,25 @@ import p.lodz.Repositiories.PurchaseRepository;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class PurchaseManager {
     private final PurchaseRepository purchaseRepository;
     private final ProductRepository productRepository;
 
     private final AbstractMongoRepository repository;
+    private final KafkaProducent kafkaProducent;
 
     public PurchaseManager(MongoCollection<Purchase> purchaseCollection,
-                           MongoCollection<Product> productCollection, AbstractMongoRepository repository) {
+                           MongoCollection<Product> productCollection, AbstractMongoRepository repository) throws ExecutionException, InterruptedException {
         this.purchaseRepository = new PurchaseRepositoryMongoDB(purchaseCollection);
         this.productRepository = new ProductRepositoryMongoDB(productCollection);
         this.repository = repository;
+        this.kafkaProducent = new KafkaProducent();
     }
 
-    public Purchase getPurchase(ObjectId id){
+    public Purchase getPurchase(UUID id){
         return purchaseRepository.findPurchaseById(id);
     }
     public Purchase registerPurchase(Client customer, ProductEntry product) {
@@ -60,6 +67,8 @@ public class PurchaseManager {
             purchase = new Purchase(customer, product);
             purchase = purchaseRepository.savePurchase(purchase);
             session.commitTransaction();
+            kafkaProducent.sendPurchaseAsync(purchase);
+
         }catch (Exception e) {
             session.abortTransaction();
         }
@@ -100,6 +109,7 @@ public class PurchaseManager {
             purchase = new Purchase(customer, products);
             purchase = purchaseRepository.savePurchase(purchase);
             session.commitTransaction();
+            kafkaProducent.sendPurchaseAsync(purchase);
         }catch (Exception e) {
 
             session.abortTransaction();

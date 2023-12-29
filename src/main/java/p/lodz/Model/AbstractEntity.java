@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Getter
@@ -14,8 +15,8 @@ import java.util.Objects;
 public class AbstractEntity implements Serializable {
 
     @BsonProperty("_id")
-    private ObjectId entityId;
-    public AbstractEntity(ObjectId entityId) {
+    private UUID entityId;
+    public AbstractEntity(UUID entityId) {
         this.entityId = entityId;
     }
 

@@ -7,8 +7,9 @@ import lombok.Setter;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.types.ObjectId;
 import p.lodz.Model.Type.ClientType;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -28,7 +29,7 @@ public class Client extends AbstractEntity {
     private double moneySpent = 0;
 
     public Client( String firstName, String lastName, Address address, ClientType clientType) {
-        super(new ObjectId());
+        super(UUID.randomUUID());
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -50,7 +51,7 @@ public class Client extends AbstractEntity {
 
 
     @BsonCreator
-    public Client(@BsonProperty("_id") ObjectId entityId,
+    public Client(@BsonProperty("_id") UUID entityId,
                   @BsonProperty("first_name") String firstName,
                   @BsonProperty("last_name") String lastName,
                   @BsonProperty("client_type") ClientType clientType,

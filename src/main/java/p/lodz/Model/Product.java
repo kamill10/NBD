@@ -7,6 +7,8 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @ToString
@@ -28,7 +30,7 @@ public class Product extends AbstractEntity {
     private String description;
 
     @BsonCreator
-    public Product(@BsonProperty("_id") ObjectId id,
+    public Product(@BsonProperty("_id") UUID id,
                    @BsonProperty("product_name") String productName,
                    @BsonProperty("base_cost") double baseCost,
                    @BsonProperty("discount") double discount,
@@ -48,7 +50,7 @@ public class Product extends AbstractEntity {
                    double baseCost,
                    int numberOfProducts,
                    String description) {
-        super(new ObjectId());
+        super(UUID.randomUUID());
         this.productName = productName;
         this.baseCost = baseCost;
         this.numberOfProducts = numberOfProducts;

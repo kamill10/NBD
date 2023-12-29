@@ -8,6 +8,7 @@ import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 import p.lodz.Repositiories.ProductRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ProductManager {
     private final ProductRepository productRepository;
@@ -16,7 +17,7 @@ public class ProductManager {
         this.productRepository = new ProductRepositoryMongoDB(collection);
     }
 
-    public Product getProduct(ObjectId id){
+    public Product getProduct(UUID id){
         return productRepository.findProductById(id);
     }
 

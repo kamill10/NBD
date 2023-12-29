@@ -1,15 +1,15 @@
 package p.lodz.Repositiories;
 
-import org.bson.types.ObjectId;
 import p.lodz.Model.Product;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductRepository {
     Product saveProduct(Product product);
-    Product archiveProduct(ObjectId id, boolean value);
-    Product decrementNumberOfProducts(ObjectId id, int quantity);
-    Product findProductById(ObjectId id);
+    Product archiveProduct(UUID id, boolean value);
+    Product decrementNumberOfProducts(UUID id, int quantity);
+    Product findProductById(UUID id);
     List<Product> findAllProducts();
-    boolean deleteProduct(ObjectId id);
+    boolean deleteProduct(UUID id);
 }

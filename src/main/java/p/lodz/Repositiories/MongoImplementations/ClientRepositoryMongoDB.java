@@ -8,6 +8,7 @@ import p.lodz.Repositiories.ClientRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ClientRepositoryMongoDB implements ClientRepository {
 
@@ -25,13 +26,13 @@ public class ClientRepositoryMongoDB implements ClientRepository {
     }
 
     @Override
-    public boolean deleteClient(ObjectId id) {
+    public boolean deleteClient(UUID id) {
         Client deletedClient = clientsCollection.findOneAndDelete(Filters.eq("_id", id));
         return deletedClient != null;
     }
 
     @Override
-    public Client findClientById(ObjectId id) {
+    public Client findClientById(UUID id) {
         return  clientsCollection.find(Filters.eq("_id", id)).first();
     }
 

@@ -9,6 +9,7 @@ import p.lodz.Repositiories.ClientRepository;
 import p.lodz.Repositiories.MongoImplementations.ClientRepositoryMongoDB;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ClientManager {
     private final ClientRepository clientRepository;
@@ -19,7 +20,7 @@ public class ClientManager {
 //        this.clientTypeRepository = new ClientTypeRepositoryImpl(em);
     }
 
-    public Client getClient(ObjectId id){
+    public Client getClient(UUID id){
         return clientRepository.findClientById(id);
     }
 

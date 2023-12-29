@@ -10,6 +10,8 @@ import p.lodz.Managers.ProductManager;
 import p.lodz.Managers.PurchaseManager;
 import p.lodz.Repositiories.AbstractMongoRepository;
 
+import java.util.concurrent.ExecutionException;
+
 @Getter
 public class Shop implements AutoCloseable{
     private final ClientManager clientManager;
@@ -17,7 +19,7 @@ public class Shop implements AutoCloseable{
     private final PurchaseManager purchaseManager;
     private final AbstractMongoRepository repository;
 
-    public Shop() {
+    public Shop() throws ExecutionException, InterruptedException {
         repository = new AbstractMongoRepository();
         createPurchaseCollectionWithValidations();
         createProductCollectionWithValidations();

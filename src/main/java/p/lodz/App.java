@@ -11,9 +11,10 @@ import p.lodz.Repositiories.MongoImplementations.ProductRepositoryMongoDB;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         try(Shop shop = new Shop()) {
             Product product = shop.getProductManager().registerProduct("bbb", 10, 1, "aabb");
             Product product1 = shop.getProductManager().registerProduct("test", 120, 3, "casf");
@@ -58,5 +59,8 @@ public class App {
         } catch (Exception e){
             e.printStackTrace();
         }
+        KafkaConsument kafkaConsument = new KafkaConsument(2);
+        kafkaConsument.initConsumers();
+        kafkaConsument.consume();
     }
 }

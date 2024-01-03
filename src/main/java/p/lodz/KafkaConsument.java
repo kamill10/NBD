@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 @Getter
 public class KafkaConsument {
-    private List<Consumer<UUID, String>> kafkaConsumers = new ArrayList<>();
+    private List<KafkaConsumer<UUID, String>> kafkaConsumers = new ArrayList<>();
     private final String RENT_TOPIC = "rents";
     int numCunsumers;
 
@@ -31,7 +31,7 @@ public class KafkaConsument {
         //consumerConfig.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
         //consumerConfig.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, "10000");
         for (int i = 0; i < numCunsumers; i++) {
-            Consumer<UUID, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig);
+            KafkaConsumer<UUID, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig);
             kafkaConsumer.subscribe(List.of(RENT_TOPIC));
             kafkaConsumers.add(kafkaConsumer);
         }

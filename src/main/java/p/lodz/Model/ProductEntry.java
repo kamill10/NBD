@@ -2,9 +2,11 @@ package p.lodz.Model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class ProductEntry {
 
     private Product product;

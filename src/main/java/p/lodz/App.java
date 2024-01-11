@@ -59,8 +59,6 @@ public class App {
         } catch (Exception e){
             e.printStackTrace();
         }
-        KafkaConsument kafkaConsument = new KafkaConsument(2);
-        kafkaConsument.initConsumers();
-        kafkaConsument.consume();
+
     }
 }

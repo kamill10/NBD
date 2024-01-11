@@ -4,6 +4,7 @@ package p.lodz.Model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Client extends AbstractEntity {
 
     @BsonProperty("first_name")
@@ -48,6 +50,8 @@ public class Client extends AbstractEntity {
     public void addMoneySpent(double value){
         moneySpent += value;
     }
+
+
 
 
     @BsonCreator

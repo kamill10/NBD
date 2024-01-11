@@ -43,7 +43,8 @@ public class KafkaProducent {
         createTopic();
         Jsonb jsonb = JsonbBuilder.create();
         Callback callback= this::onCompletion;
-            String jsonClient = jsonb.toJson (purchase);
+            String jsonClient = jsonb.toJson (purchase +"nazwa - sklep");
+            System.out.println(jsonClient);
             ProducerRecord<UUID, String> record = new ProducerRecord<>(RENT_TOPIC, purchase.getEntityId(), jsonClient);
             kafkaProducer.send(record,callback);
     }

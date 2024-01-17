@@ -18,7 +18,6 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class Purchase extends AbstractEntity{
 
     @BsonProperty("purchase_date")
@@ -53,6 +52,21 @@ public class Purchase extends AbstractEntity{
         setDeliveryTime();
         setFinalCost();
         client.addMoneySpent(finalCost);
+    }
+    public UUID getID(){
+        return super.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "id=" + getId()+
+                "purchaseDate=" + purchaseDate +
+                ", deliveryDate=" + deliveryDate +
+                ", finalCost=" + finalCost +
+                ", client=" + client +
+                ", products=" + products +
+                '}';
     }
 
     @BsonCreator

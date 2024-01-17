@@ -12,6 +12,13 @@ import org.bson.types.ObjectId;
 @Setter
 @NoArgsConstructor
 public abstract class ClientType {
+    @Override
+    public String toString() {
+        return "ClientType{" +
+                "clientDiscount=" + clientDiscount +
+                ", shorterDeliveryTime=" + shorterDeliveryTime +
+                '}';
+    }
 
     @BsonProperty("client_discount")
     protected double clientDiscount;

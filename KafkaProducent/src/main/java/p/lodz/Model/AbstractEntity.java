@@ -2,6 +2,7 @@ package p.lodz.Model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
@@ -26,6 +27,9 @@ public class AbstractEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         AbstractEntity that = (AbstractEntity) o;
         return Objects.equals(entityId, that.entityId);
+    }
+    public UUID getId(){
+        return entityId;
     }
 
     @Override

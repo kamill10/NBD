@@ -56,7 +56,7 @@ public class MongoRepo implements AutoCloseable {
 
     @Override
     public void close() {
-        //database.drop();
+        database.drop();
         mongoClient.close();
     }
 }

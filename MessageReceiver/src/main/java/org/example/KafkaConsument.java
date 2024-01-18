@@ -34,12 +34,14 @@ public class KafkaConsument {
         consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, "group-rents");
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9192,kafka2:9292,kafka3:9392");
-        //consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"true");
-        for (int i = 0; i < numCunsumers; i++) {
-            KafkaConsumer<UUID, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig);
-            kafkaConsumer.subscribe(Collections.singleton(RENT_TOPIC));
-            kafkaConsumers.add(kafkaConsumer);
-            System.out.println("creating consumers");
+        consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"false");
+        if(kafkaConsumers.isEmpty()) {
+            for (int i = 0; i < numCunsumers; i++) {
+                KafkaConsumer<UUID, String> kafkaConsumer = new KafkaConsumer<>(consumerConfig);
+                kafkaConsumer.subscribe(Collections.singleton(RENT_TOPIC));
+                kafkaConsumers.add(kafkaConsumer);
+                System.out.println("creating consumers");
+            }
         }
     }
 
@@ -72,6 +74,7 @@ public class KafkaConsument {
                     }
                     saved = true;
                     System.out.println(result);
+                    consumer.commitAsync();
                 }
             }
         } catch (WakeupException we) {
